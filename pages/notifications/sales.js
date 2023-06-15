@@ -1,10 +1,10 @@
 import React,{useState,useEffect} from 'react'
 import {Flex,Image,Text,Input,Button,Select,Circle} from '@chakra-ui/react'
-import {useRouter} from 'next/router'
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import AddIcon from '@mui/icons-material/Add';
+import {useRouter} from 'next/router';
+import styles from '../../styles/Notifications.module.css'
 // import Get_Products from '../../api/Products/get_products.js'
 import Get_Orders from '../api/orders/get_orders.js';
+import moment from 'moment';
 
 export default function Sales_Inventory(){
 	const router = useRouter();
@@ -31,10 +31,10 @@ export default function Sales_Inventory(){
 					<Text>You dont have any orders to view.</Text>
 				</Flex>
 			:
-				<Flex direction='column' overflowY='scroll' h='80vh'>
+				<Flex className={styles.item_card_container} gap='2'>
 					{orders_data?.map((item)=>{
 						return(
-							<Orders item={item} key={item._id}/>
+							<OrderItem order={item} key={item._id}/>
 						)
 					})}
 				</Flex>
@@ -43,16 +43,19 @@ export default function Sales_Inventory(){
 	)
 }
 
-const Orders=({item})=>{
+const OrderItem=({order})=>{
 	const router = useRouter();
+	const date = moment(order?.createdAt).format("MMM Do YY")
 	return(
-		<Flex direction='column' m='1' w='100%' bg='#eee' borderRadius='5' p='2' boxShadow='lg' h='200px'>
-			<Text fontWeight='bold' fontSize='24px'>{item?.name_of_client}</Text>
-			<Text>Unit Price: {item?.unit_price} </Text>
-			<Text>Volume: {item?.volume_of_items} </Text>
-			<Text>Total: {item?.total} </Text>
-			<Text>Date: {item?.createdAt}</Text>
-			<Button bg='#000' color='#fff' onClick={(()=>{router.push(`/order/${item?._id}`)})}>View Order</Button>
+		<Flex boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order?._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
+			<Text fontSize='20px' fontWeight='bold'>Company name: {order?.company_name_of_client}</Text>
+			<Text>Product Name: {order?.name_of_product}</Text>
+			<Text>Total: KES {order?.total}</Text>
+			<Text>Date: {date}</Text>
+			<Flex gap='1'>
+				<Text>Order Status:</Text>
+				<Text color={order?.order_status === 'completed'? 'green' : 'orange'}>{order?.order_status}</Text>
+			</Flex>
 		</Flex>
 	)
 }

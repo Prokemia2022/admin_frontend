@@ -1,10 +1,11 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Image,Text,Input,Button,Select,Circle} from '@chakra-ui/react'
+import {Flex,Text} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import AddIcon from '@mui/icons-material/Add';
-// import Get_Products from '../../api/Products/get_products.js'
 import Get_Distributors from '../../api/distributors/get_distributors.js';
+//components
+import Item_Card from '../../../components/Accounts_Notification_Card.js';
+//styles
+import styles from '../../../styles/Notifications.module.css'
 
 export default function Distributors(){
 	const router = useRouter();
@@ -32,28 +33,14 @@ export default function Distributors(){
 					<Text>You dont have new distributors to verify.</Text>
 				</Flex>
 			:
-				<Flex direction='column' overflowY='scroll' h='80vh'>
+				<Flex className={styles.item_card_container}>
 					{distributors_data?.map((item)=>{
 						return(
-							<Distributor_Item item={item} key={item._id}/>
+							<Item_Card item={item} key={item._id} link={`/notifications/distributor/${item?._id}`}/>
 						)
 					})}
 				</Flex>
 			}
-		</Flex>
-	)
-}
-
-const Distributor_Item=({item})=>{
-	const router = useRouter()
-	return(
-		<Flex direction='column' m='1' w='100%' gap='1' bg='#eee' borderRadius='5' boxShadow='lg' h='175px' p='1' justify='space-between'>
-			<Flex p='2' direction='column'>
-				<Text fontWeight='bold' fontSize='20px'>{item?.company_name}</Text>
-				<Text>{item?.email_of_company}</Text>
-				<Text>{item?.address_of_company}</Text>
-			</Flex>
-			<Button onClick={(()=>{router.push(`/notifications/distributor/${item?._id}`)})} bg='#000' color='#fff'>View</Button>
 		</Flex>
 	)
 }

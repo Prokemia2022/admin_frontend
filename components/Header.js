@@ -63,7 +63,7 @@ export default function Header(){
               status: 'error',
               isClosable: true,
             });
-			console.log(err);
+			//console.log(err);
 		})
 	}
 
@@ -83,7 +83,8 @@ export default function Header(){
 				toast({
 					title: 'You have been signed out.',
 					description: `For any issues contact support or the administrator.`,
-					status: 'success',
+					position: 'top-left',
+					variant: 'subtle',
 					isClosable: true,
 				});
 				return ;
@@ -91,21 +92,23 @@ export default function Header(){
 		}).catch((err)=>{
 			if (err.response?.status == 500){
 				toast({
-					title: 'You have been signed out.',
-					description: `You do not have access to this platform.`,
-					status: 'success',
+					title: 'Error while logging in.',
+					description: `${err.response?.data}`,
+					status: 'error',
+					position: 'top-left',
+					variant: 'subtle',
 					isClosable: true,
 				});
 				router.push('/')
 				return ;
 			}
-			console.log(err)
+			//console.log(err)
 		})
 	}
 	return(
 		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center' position='sticky' top='0px' zIndex='10'>
 			<Flex p='2' align='center' gap='1' borderRadius='5' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`)})}>
-				{user_data?.user_image == '' || !user_data?.user_image? <AccountCircleIcon style={{color:'grey',fontSize:'35px'}}/> : <Image src={user_data?.user_image} boxSize='35px' boxShadow='lg' borderRadius='40px' alt='pp'/>}
+				{user_data?.user_image == '' || !user_data?.user_image? <AccountCircleIcon style={{color:'grey',fontSize:'35px'}}/> : <Image src={user_data?.user_image} objectFit='cover' boxSize='50px' boxShadow='lg' borderRadius='5px' alt='pp'/>}
 			</Flex>
 			<Flex align='center' gap='3'>
 				<Button w='120%' p='3' fontSize='14px' bg='#009393' color='#fff' onClick={(()=>{router.push(`/product/add_product`)})}>
@@ -143,33 +146,35 @@ const navigation=[
 	},
 	{
 		id:3,
-		title:'Distributors',
-		link:'distributors',
-		logo:<Groups/>
-	},
-	{
-		id:4,
 		title:'Salespersons',
 		link:'salespersons',
 		logo:<Groups/>
 	},
 	{
-		id:5,
-		title:'Manufacturers',
-		link:'manufacturers',
-		logo:<Groups/>
-	},
-	{
-		id:6,
+		id:4,
 		title:'Customers',
 		link:'customers',
 		logo:<Groups/>
 	},
 	{
-		id:7,
+		id:5,
 		title:'Control',
 		link:'util_controls',
 		logo:<Tune/>
+	},
+]
+const suppliers_navigation=[
+	{
+		id:1,
+		title:'Distributors',
+		link:'suppliers/distributors',
+		logo:<Groups/>
+	},
+	{
+		id:2,
+		title:'Manufacturers',
+		link:'suppliers/manufacturers',
+		logo:<Groups/>
 	},
 ]
 const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
@@ -187,20 +192,28 @@ const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 					<Text fontSize='14px'  mb='0' >Notifications</Text>
 				</Flex>
 			</Flex>
-			<Flex className={styles.Menu_items_container} direction='column' h='90%' overflowY='scroll' w='100%' p='2'>
-				{navigation.map((item)=>{
+			<Flex className={styles.Menu_items_container} direction='column' p='2'>
+			{navigation.map((item)=>{
+				return(
+					<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{router.push(`/${item.link}`);setshowmenubar(!showmenubar)})}>
+					{item.logo}
+					<Text  p='2' fontSize='20px'  mb='0' >{item.title}</Text>
+					</Flex>
+					)
+				})}
+				{suppliers_navigation.map((item)=>{
 					return(
-						<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{router.push(`/${item.link}`);setshowmenubar(!showmenubar)})}>
+						<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{window.location=(`/${item.link}`);setshowmenubar(!showmenubar)})}>
 							{item.logo}
 							<Text  p='2' fontSize='20px'  mb='0' >{item.title}</Text>
 						</Flex>
 					)
-				})}
+				})}	
 				<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`);setshowmenubar(!showmenubar)})}>
 					<AccountCircleIcon/>
 					<Text  p='2' fontSize='20px'  mb='0' >Profile</Text>
 				</Flex>
-				{user_data?.role === 'Manager' || user_data?.role === 'IT'?
+				{user_data?.role === 'Manager' || user_data?.role === 'Tech Support'?
 					<>
 						<Flex justify='space-between' borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{set_handle_persmission_sub_menu(!handle_persmission_sub_menu)})}>
 							<Flex align='center'>

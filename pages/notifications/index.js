@@ -2,7 +2,7 @@
 import React,{useState,useEffect} from 'react';
 import {Flex,Text,Button,Input} from '@chakra-ui/react';
 //components imports
-import styles from '../../styles/Home.module.css';
+import styles from '../../styles/Notifications.module.css';
 import Header from '../../components/Header.js';
 //icon imports
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -14,7 +14,10 @@ import Salespeople from './salesperson/all.js'
 import Sales from './sales.js'
 import Requests from './requests.js'
 import Industries from './industries.js'
-import Technologies from './technologies.js'
+import Technologies from './technologies.js';
+import Feedbacks from './feedbacks';
+import Support_Questions from './support_questions';
+import Request_Demo_Tickets from './demo_requests';
 
  
 export default function Page_Handler(){
@@ -23,9 +26,9 @@ export default function Page_Handler(){
 	if (currentvalue == 'products')
 	{   
 		return(
-				<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 					<Header/>
-					<Flex className={styles.consolebody} >
+					<Flex className={styles.navigation_body} >
 						<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 						<Products />
 					</Flex>
@@ -34,9 +37,9 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'distributors')
 	{
 		return(
-				<Flex direction='column' gap='2'>
+				<Flex className={styles.notification_body}>
 					<Header/>
-					<Flex className={styles.consolebody}>
+					<Flex className={styles.navigation_body}>
 						<Navbar  currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 						<Distributors/>
 					</Flex>
@@ -45,9 +48,9 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'manufacturers')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 				<Header/>
-				<Flex className={styles.consolebody}>
+				<Flex className={styles.navigation_body}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 					<Manufacturers/>
 				</Flex>
@@ -56,9 +59,9 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'salespeople')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 				<Header/>
-				<Flex className={styles.consolebody}>
+				<Flex className={styles.navigation_body}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 					<Salespeople/>
 				</Flex>
@@ -67,9 +70,9 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'sales')
 	{
 		return(
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 				<Header/>
-				<Flex className={styles.consolebody}>
+				<Flex className={styles.navigation_body}>
 					<Navbar  currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 					<Sales />
 				</Flex>
@@ -78,9 +81,9 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'requests')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 				<Header/>
-				<Flex className={styles.consolebody}>
+				<Flex className={styles.navigation_body}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 					<Requests/>
 				</Flex>
@@ -89,9 +92,9 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'industries')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 				<Header/>
-				<Flex className={styles.consolebody}>
+				<Flex className={styles.navigation_body}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 					<Industries/>
 				</Flex>
@@ -100,19 +103,52 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'technologies')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 				<Header/>
-				<Flex className={styles.consolebody}>
+				<Flex className={styles.navigation_body}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 					<Technologies/>
 				</Flex>
 			</Flex>
 		)
+	}else if (currentvalue == 'feedbacks')
+	{
+		return (
+			<Flex className={styles.notification_body}>
+				<Header/>
+				<Flex className={styles.navigation_body}>
+					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
+					<Feedbacks/>
+				</Flex>
+			</Flex>
+		)
+	}else if (currentvalue == 'support_questions')
+	{
+		return (
+			<Flex className={styles.notification_body}>
+				<Header/>
+				<Flex className={styles.navigation_body}>
+					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
+					<Support_Questions/>
+				</Flex>
+			</Flex>
+		)
+	}else if (currentvalue == 'demo_requests')
+	{
+		return (
+			<Flex className={styles.notification_body}>
+				<Header/>
+				<Flex className={styles.navigation_body}>
+					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
+					<Request_Demo_Tickets/>
+				</Flex>
+			</Flex>
+		)
 	}else{
 		return(
-			<Flex direction='column' gap='2'>
+			<Flex className={styles.notification_body}>
 					<Header/>
-					<Flex className={styles.consolebody} >
+					<Flex className={styles.navigation_body} >
 						<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
 						<Products/>
 					</Flex>
@@ -160,22 +196,40 @@ const navItems = [
  	id:8,
 	 title:'Technologies',
 	 link:'technologies',
- }
+ },{
+	id: 9,
+	title: 'Support_questions',
+	link: 'support_questions'
+ },{
+	id:10,
+	title:'Feedbacks',
+	link:'feedbacks',
+},{
+	id:11,
+	title:'Request_Demos',
+	link:'demo_requests',
+}
  ]
 
-const Navbar=({
-		setCurrentValue,currentvalue,})=>{
-
+const Navbar=({setCurrentValue,currentvalue,})=>{
 	return(
-		<Flex p='2' gap='3' className={styles.consoleNavigation} cursor='pointer'>
-			{navItems.map((content)=>{
-				return (
-					<Flex key={content.id} color={currentvalue === content.title.toLowerCase() ? '#009393': '#fff'} align='center' p='2' gap='3' className={styles.consoleNavItem} onClick={(()=>{setCurrentValue(content.link)})}>
-						{content.icon}
-						<Text fontSize='20px' p='1.5' mb='0'>{content.title}</Text>
-					</Flex>
-				)
-			})}
+		<Flex className={styles.navigation_body_Items} cursor='pointer' gap='4'>
+			<Flex className={styles.navigation_body_Items_Container} gap='2'>
+				{navItems.map((content)=>{
+					return (
+						<Text 
+							key={content.id}
+							fontSize='20px' 
+							color={currentvalue === content.title.toLowerCase() ? '#009393': '#fff'}
+							className={styles.navigation_Item} 
+							onClick={(()=>{setCurrentValue(content.link)})}
+							fontWeight={'bold'}
+						>
+							{content.title}
+						</Text>
+					)
+				})}
+			</Flex>
 		</Flex>
 	)
 }

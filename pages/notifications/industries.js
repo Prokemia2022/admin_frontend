@@ -6,6 +6,9 @@ import Approve_Industry from '../api/controls/approve_industry'
 import Delete_Industry from '../api/controls/delete_industry.js';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
+import styles from '../../styles/Notifications.module.css';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Industries(){
 	const router = useRouter();
@@ -14,6 +17,7 @@ export default function Industries(){
     const [auth_role,set_auth_role]=useState("")
 	
 	const [industries_data, set_industries_data]=useState([]);
+	const [refresh,set_refresh]=useState(null);
 
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
@@ -40,19 +44,19 @@ export default function Industries(){
 	        //console.log(decoded);
 	        set_auth_role(decoded?.role)
 	      }
-	},[])
+	},[refresh])
 	return(
-		<Flex direction='column' gap='3' p='2' w='100%'>
+		<Flex direction='column' gap='3' p='2' w='100%' bg='#fff'>
 			<Text fontSize='32px' fontWeight='bold' color ='#009393'>Industries</Text>
 			{industries_data?.length === 0?
 				<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center' bg='#eee' borderRadius='5' >
 					<Text>You dont have new industries to verify.</Text>
 				</Flex>
 			:
-				<Flex direction='column' overflowY='scroll' h='80vh'>
+				<Flex className={styles.item_card_container} gap='2'>
 					{industries_data?.map((item)=>{
 						return(
-							<Industry item={item} key={item._id} auth_role={auth_role}/>
+							<Industry item={item} key={item._id} auth_role={auth_role} set_refresh={set_refresh}/>
 						)
 					})}
 				</Flex>
@@ -61,7 +65,7 @@ export default function Industries(){
 	)
 }
 
-const Industry=({item,auth_role})=>{
+const Industry=({item,auth_role,set_refresh})=>{
 	const router = useRouter();
 	const toast = useToast()
 
@@ -72,46 +76,60 @@ const Industry=({item,auth_role})=>{
 	const handle_approve_industry=async()=>{
 		await Approve_Industry(payload).then(()=>{
 			toast({
-              title: '',
-              description: `${item?.title} has been approved`,
-              status: 'info',
-              isClosable: true,
+				title: 'Approval request success',
+				position: 'top-left',
+				variant:"subtle",
+				description: `${item?.title} has been approved`,
+				status: 'success',
+				isClosable: true,
             });
+		}).then(()=>{
+			set_refresh(true);
 		}).catch((err)=>{
 			toast({
-              title: 'could not approve this industry',
-              description: err.response?.data,
-              status: 'error',
-              isClosable: true,
+				title: 'Approval request failed',
+				position: 'top-left',
+				variant:"subtle",
+				description: err.response?.data,
+				status: 'error',
+				isClosable: true,
             });
 		})
 	}
 	const handle_delete_industry=async()=>{
 		await Delete_Industry(payload).then(()=>{
 			toast({
-              title: '',
-              description: `${item?.title} has been deleted`,
-              status: 'info',
-              isClosable: true,
+				title: 'Deletion request success',
+				position: 'top-left',
+				variant:"subtle",
+				description: `${item?.title} has been deleted`,
+				status: 'success',
+				isClosable: true,
             });
+		}).then(()=>{
+			set_refresh(true);
 		}).catch((err)=>{
 			//console.log(err)
 			toast({
-              title: 'could not delete this industry',
-              description: err.response?.data,
-              status: 'error',
-              isClosable: true,
+				title: 'Industry deletion failed',
+				position: 'top-left',
+				variant:"subtle",
+				description: err.response.data,
+				status: 'error',
+				isClosable: true,
             });
 		})
 	}
 	return(
-		<Flex direction='column' bg='#eee' boxShadow='lg' borderRadius='5' m='2' p='2' gap='2'>
-			<Text fontWeight='bold' fontSize='20px'>Title: {item?.title}</Text>
-			<Text>Description: {item?.description}</Text>
-			<Flex gap='2'>
-				<Button flex='1' bg='#000' color='#fff' onClick={handle_approve_industry}>Approve</Button> 
-				<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={handle_delete_industry}>Delete</Button> 
+		<Flex direction='column' bg='#eee' borderRadius='5' p='2' gap='2'>
+			<Flex justify='space-between'>
+				<Text fontWeight='bold' fontSize='20px'>{item?.title}</Text>
+				<Flex gap='2'>
+					<CheckBoxIcon style={{color:"#009393",fontSize:'30px',cursor:'pointer'}} onClick={handle_approve_industry}/>
+					<DeleteIcon style={{color:"crimson",fontSize:'30px',cursor:'pointer'}} onClick={handle_delete_industry}/>
+				</Flex>
 			</Flex>
+			<Text fontSize='14px'>{item?.description}</Text>
 		</Flex>
 	)
 }

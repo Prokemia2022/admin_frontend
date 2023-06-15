@@ -18,7 +18,7 @@ export default function Page_Handler(){
 	if (currentvalue == 'industries')
 	{   
 		return(
-				<Flex direction='column' gap='2'>
+				<Flex direction='column' h='100vh'>
 					<Header/>
 					<Flex className={styles.consolebody} >
 						<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -29,7 +29,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'technologies')
 	{
 		return(
-				<Flex direction='column' gap='2'>
+				<Flex direction='column' h='100vh'>
 					<Header/>
 					<Flex className={styles.consolebody}>
 						<Navbar  currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -39,7 +39,7 @@ export default function Page_Handler(){
 			)
 	}else if (currentvalue == 'careers'){
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -49,7 +49,7 @@ export default function Page_Handler(){
 		)
 	}else{
 		return(
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody} >
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>

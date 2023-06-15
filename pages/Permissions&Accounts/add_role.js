@@ -69,6 +69,8 @@ export default function Add_New_Role(){
     const [product_scopes,set_product_scopes]=useState([]);
     const [orders_scopes,set_orders_scopes]=useState([]);
     const [requests_scopes,set_requests_scopes]=useState([]);
+    const [support_questions_scopes,set_support_questions_scopes]=useState([]);
+    const [request_demo_scopes,set_request_demo_scopes]=useState([]);
 
     const Handle_Utils_Scope = (event,title) =>{
         const isChecked = event.target.checked;
@@ -98,6 +100,24 @@ export default function Add_New_Role(){
                     let index = requests_scopes.indexOf(event.target.value);
                     requests_scopes.splice(index, 1);
                     set_requests_scopes(requests_scopes);
+                }
+              break;
+            case "Support Questions":
+                if(isChecked){
+                    set_support_questions_scopes([...support_questions_scopes,event.target.value]);
+                }else{
+                    let index = support_questions_scopes.indexOf(event.target.value);
+                    support_questions_scopes.splice(index, 1);
+                    set_support_questions_scopes(support_questions_scopes);
+                }
+              break;
+            case "Request Demo Tickets":
+                if(isChecked){
+                    set_request_demo_scopes([...request_demo_scopes,event.target.value]);
+                }else{
+                    let index = request_demo_scopes.indexOf(event.target.value);
+                    request_demo_scopes.splice(index, 1);
+                    set_request_demo_scopes(request_demo_scopes);
                 }
               break;
             default:
@@ -188,6 +208,8 @@ export default function Add_New_Role(){
         careers_scopes,
         administrator_scopes,
         roles_management_scopes,
+        support_questions_scopes,
+        request_demo_scopes,
         auth_role
     }
     //console.log(payload);
@@ -449,6 +471,14 @@ const util_scopes = [
     {
         title:'Manufacturer requests',
         scope_content:['edit','approve','decline']
+    },
+    {
+        title:'Support Questions',
+        scope_content:['mark_as_solved','un_mark_as_solved','delete']
+    },
+    {
+        title:'Request Demo Tickets',
+        scope_content:['mark_as_solved','un_mark_as_solved','delete']
     },
 ]
 

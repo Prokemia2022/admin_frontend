@@ -80,7 +80,7 @@ export default function Role_Management(){
 							<Text>Roles Management</Text>		
 						</Flex>
 					</Flex>
-					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search} w='100%'>
+					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search}>
 						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'} >
 							<Input
 							type='text'
@@ -206,6 +206,12 @@ const Admin_Role_Card_Item=({role,auth_role})=>{
 							}
 							{role?.manufacturer_request_scopes?.length == 0?  null :
 								<Request_Scope_Card_Item role={role} />
+							}
+							{role?.support_questions_scopes?.length == 0?  null :
+								<Support_Question_Scope_Card_Item role={role} />
+							}
+							{role?.request_demo_scopes?.length == 0?  null :
+								<Request_Demo_Tickets_Scope_Card_Item role={role} />
 							}
 						</Flex>
 						:null
@@ -381,6 +387,34 @@ const Request_Scope_Card_Item=({role})=>{
 			<Text fontWeight='bold' fontSize='12px' color='orange'>Manufacturer request scopes</Text>
 			<Flex gap='2' wrap='Wrap'>
 				{role?.manufacturer_request_scopes?.map((scope,index)=>{
+					return(
+						<Text key={index} fontSize='10px' color='grey' border='1px solid #eee' p='1'>{scope}</Text>
+					)
+				})}
+			</Flex>
+		</>
+	)
+}
+const Support_Question_Scope_Card_Item=({role})=>{
+	return(
+		<>
+			<Text fontWeight='bold' fontSize='12px' color='orange'>Support Questions scopes</Text>
+			<Flex gap='2' wrap='Wrap'>
+				{role?.support_questions_scopes?.map((scope,index)=>{
+					return(
+						<Text key={index} fontSize='10px' color='grey' border='1px solid #eee' p='1'>{scope}</Text>
+					)
+				})}
+			</Flex>
+		</>
+	)
+}
+const Request_Demo_Tickets_Scope_Card_Item=({role})=>{
+	return(
+		<>
+			<Text fontWeight='bold' fontSize='12px' color='orange'>Request Demo Tickets scopes</Text>
+			<Flex gap='2' wrap='Wrap'>
+				{role?.request_demo_scopes?.map((scope,index)=>{
 					return(
 						<Text key={index} fontSize='10px' color='grey' border='1px solid #eee' p='1'>{scope}</Text>
 					)

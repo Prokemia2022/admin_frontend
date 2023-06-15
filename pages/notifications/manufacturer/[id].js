@@ -37,7 +37,7 @@ function Manufacturer(){
 
 	const get_data=async(payload)=>{
 		await Get_Manufacturer(payload).then((response)=>{
-			console.log(response)
+			//console.log(response)
 			return set_manufacturer_data(response?.data)
 		})
 	}
@@ -46,7 +46,7 @@ function Manufacturer(){
 			const data = response?.data
 			const result = data?.filter(item => item?.email_of_lister.includes(manufacturer_data?.email_of_company))
 			set_products(result)
-			console.log(result)
+			//console.log(result)
 		})
 	}
 	useEffect(()=>{

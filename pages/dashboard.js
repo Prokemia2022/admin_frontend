@@ -1,25 +1,29 @@
+//modules
 import React,{useState,useEffect}from 'react'
-import {Flex,Text,Button} from '@chakra-ui/react'
-import Header from '../components/Header.js';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import AddNewProduct from '../components/modals/addNewProduct.js';
-import AddNewManufacturer from '../components/modals/addNewManufacturer.js';
-import {useRouter} from 'next/router';
-import jwt_decode from "jwt-decode";
-import Cookies from 'universal-cookie';
+import {Flex,Text} from '@chakra-ui/react'
+//icons
+//api
 import Get_Clients from './api/clients/get_clients.js';
 import Get_Distributors from '../pages/api/distributors/get_distributors.js';
 import Get_Manufacturers from '../pages/api/manufacturers/get_manufacturers.js';
 import Get_SalesPeople from '../pages/api/salespeople/get_salespeople.js';
 import Get_Orders from './api/orders/get_orders.js';
-import Get_Products from './api/Products/get_products.js'
-import { RWebShare } from "react-web-share";
+import Get_Products from './api/Products/get_products.js';
+//utils
+import {useRouter} from 'next/router';
+import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
+//styles
+//components
+import Header from '../components/Header.js';
 
-function Dashboard(){
-	const [isaddnewproductModalvisible,setisaddnewProductModalvisible]=useState(false);
-	const [isaddnewmanufacturerModalvisible,setisaddnewmanufacturerModalvisible]=useState(false);
-	
+export default function Dashboard(){	
+	//utils
+	const router = useRouter();
+	const cookies = new Cookies();
+  	let token = cookies.get('admin_token');
+	//data
+
 	const [clients_data, set_clients_data] = useState([]);
 	const [distributors_data, set_distributors_data]=useState([]);
 	const [manufacturers_data, set_manufacturers_data]=useState([]);
@@ -27,11 +31,8 @@ function Dashboard(){
 	const [orders_data,set_orders]=useState([]);
 	const [products,set_products]=useState([]);
 
-	const [user_name,set_user_name] = useState("")
-	const router = useRouter();
-	const cookies = new Cookies();
-  	let token = cookies.get('admin_token');
-
+	const [user_name,set_user_name] = useState("");
+	//
   	useEffect(()=>{
 	    if(token){
 	      let decoded = jwt_decode(token);
@@ -76,11 +77,9 @@ function Dashboard(){
 	  },[token])
 	return(
 		<Flex direction='column' bg='#eee'>
-			<AddNewProduct isaddnewproductModalvisible={isaddnewproductModalvisible} setisaddnewProductModalvisible={setisaddnewProductModalvisible}/>
-			<AddNewManufacturer isaddnewmanufacturerModalvisible={isaddnewmanufacturerModalvisible} setisaddnewmanufacturerModalvisible={setisaddnewmanufacturerModalvisible}/>
 			<Header/>
 			<Flex direction='column' position='relative'>
-				<Text ml='2' fontWeight='bold' fontSize='42px' color='#000' textTransform={"capitalize"}>Welcome, <br/>{user_name}</Text>
+				<Text ml='2' fontWeight='bold' fontSize='24px' color='#000' textTransform={"capitalize"}>Welcome, <br/>{user_name}</Text>
 			</Flex>
 			<Flex w='100%' justify='center'>
 				<Revenue_Tag orders_data={orders_data}/>
@@ -112,7 +111,7 @@ function Dashboard(){
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
 					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
-					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/manufacturers')})}>view all</Text>						
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('suppliers/manufacturers')})}>view all</Text>						
 				</Flex>
 			</Flex>
 			<Flex>
@@ -132,30 +131,11 @@ function Dashboard(){
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
 					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
-					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/distributors')})}>view all</Text>						
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('suppliers/distributors')})}>view all</Text>						
 				</Flex>
 			</Flex>
-			<RWebShare
-		        data={{
-		          text: "Account Sign Up Link.",
-		          url: "https://prokemia.com/signup/sales",
-		          title: "Signup Link",
-		        }}>
-		        <Button bg='#009393' m='2' color='#fff'>Salesperson account signup link 🔗</Button>
-			</RWebShare>
 		</Flex>
-	)}
-
-export default Dashboard;
-
-const User_Tag=({user})=>{
-	return(
-		<Flex w='175px' color={user.color} borderRadius='5' boxShadow='lg' p='1' m='1' align='center' justify='center' direction='column' gap='4' h='150px' bg={user.bg}>
-			<Text fontSize='42px' >{user?.numbers}</Text>
-			<Text fontWeight='bold'>{user?.title}</Text>
-		</Flex>
-	)
-}
+)}
 
 const Revenue_Tag=({orders_data})=>{
 //	//console.log(orders_data)090F14bg='rgb(0, 147, 147,0.6)'

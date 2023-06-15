@@ -11,6 +11,8 @@ import Delete_Technology from '../api/controls/delete_technology.js';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import AddIcon from '@mui/icons-material/Add';
+import styles from '../../styles/Notifications.module.css'
+
 
 export default function Technologies(){
 	const [isaddtechnologyModalvisible,setisaddtechnologyModalvisible]=useState(false);
@@ -81,7 +83,7 @@ export default function Technologies(){
 						<Item_Loading/>
 					</>
 					:
-					<Flex gap='2' direction='column' h='80vh' overflowY='scroll'>
+					<Flex className={styles.item_card_container} bg='#eee'>
 						{Technologies_data?.map((item)=>{
 							return (
 								<Technology_Item key={item._id} item={item} auth_role={auth_role}/>
@@ -138,7 +140,7 @@ const Technology_Item=({item,auth_role})=>{
 		
 	}
 	return(
-		<Flex borderRadius='5' bg='#fff'gap='1'  boxShadow={'lg'} justify='space-between'>
+		<Flex borderRadius='5' bg='#fff'gap='1' mb='2' justify='space-between'>
 			<Image src={item.cover_image} alt='industry photo' boxSize='100px' objectFit='cover' borderRadius='5'/>
 			<Flex direction='column' flex='1' p='2' gap='2' h='100px'>
 				<Text fontWeight='bold' color='#009393'>{item?.title}</Text>

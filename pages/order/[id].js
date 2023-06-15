@@ -11,6 +11,7 @@ import Delete_Order from '../api/orders/delete_order.js'
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import Loading from '../../components/Loading.js';
+import moment from 'moment';
 
 export default function Order(){
 	const router = useRouter();
@@ -66,8 +67,9 @@ export default function Order(){
 	        set_auth_role(decoded?.role)
 	      }
 	},[id,is_submitting])
+	let date = moment(order_data?.createdAt).format("MMM Do YY")
 	let today = new Date().toLocaleDateString()
-	let delivery_date = new Date(order_data?.delivery_date).toLocaleDateString()
+	let delivery_date = moment(order_data?.delivery_date).format("MMM Do YY")
 
 	const handle_create_invoice=async()=>{
 		const order_payload = {
@@ -84,7 +86,7 @@ export default function Order(){
 		unit_price: order_data?.unit_price,
 		total: order_data?.volume_of_items * order_data?.unit_price,
 		//payment&delivery
-		createdAt:today,
+		createdAt:date,
 		delivery_date: delivery_date,
 		delivery_terms: order_data?.delivery_terms,
 		payment_terms: order_data?.payment_terms
@@ -110,7 +112,7 @@ export default function Order(){
 			unit_price: order_data?.unit_price,
 			total: order_data?.volume_of_items * order_data?.unit_price,
 			//payment&delivery
-			createdAt:today,
+			createdAt:date,
 			delivery_date: delivery_date,
 			delivery_terms: order_data?.delivery_terms,
 			payment_terms: order_data?.payment_terms
@@ -224,11 +226,11 @@ export default function Order(){
 						</Flex>
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
 							<Text>Delivery_terms: {order_data?.delivery_terms}</Text>
-							<Text>Delivery_date: {order_data?.delivery_date}</Text>
+							<Text>Delivery_date: {delivery_date}</Text>
 							<Text>Payment_terms: {order_data?.payment_terms}</Text>
 						</Flex>
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
-							<Text>Created_date: {order_data?.createdAt}</Text>
+							<Text>Created_date: {date}</Text>
 							<Flex gap='1'>
 								<Text>Order Status:</Text>
 								<Text color={order_data?.order_status === 'completed'? 'green' : 'orange'}>{order_data?.order_status}</Text>

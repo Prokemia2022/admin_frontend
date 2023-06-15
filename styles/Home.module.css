@@ -72,13 +72,16 @@
   width: 40%;
 }
 .consolebody{
-  
+  flex:1;
 }
 .consoleNavigation{
-  height: 100vh;
+  height: 100%;
   width: 30%;
   background-color: #090F14;
   flex-direction: column;
+}
+.consoleNavItem{
+  border-bottom: 1px solid #eee;
 }
 .Hub{
   width: 60vw;
@@ -168,6 +171,7 @@ background: linear-gradient(to left, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Fi
 }
 .consolebody{
   flex-direction: column;
+  flex: none;
 }
 .Hub{
   position: absolute;

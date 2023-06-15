@@ -11,6 +11,7 @@ import Get_Vacancies from '../api/careers/get_vacancies.js';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import AddIcon from '@mui/icons-material/Add';
+import styles from '../../styles/Notifications.module.css'
 
 export default function Careers(){
 	const [isaddcareerModalvisible,setisaddcareerModalvisible]=useState(false);
@@ -81,7 +82,7 @@ export default function Careers(){
 						<Item_Loading/>
 					</>
 					:
-					<Flex gap='2' direction='column' h='80vh' overflowY='scroll'>
+					<Flex className={styles.item_card_container} bg='#eee'>
 						{careers_data?.map((item)=>{
 							return (
 								<Career_Item key={item._id} item={item} auth_role={auth_role}/>

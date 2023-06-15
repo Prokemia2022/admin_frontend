@@ -31,6 +31,7 @@ function SuspendAccountModal({
     setissuspendModalvisible,
     distributor_data,
     manufacturer_data,
+    supplier_data,
     client_data,
     salesperson_data,
     acc_type,
@@ -40,6 +41,7 @@ function SuspendAccountModal({
     const toast = useToast();
     const cookies = new Cookies();    
     //console.log(isaddingreviewgModalvisible);
+    //console.log(payload)
 
     const HandleModalOpen=()=>{
       if(issuspendModalvisible !== true){
@@ -61,11 +63,11 @@ function SuspendAccountModal({
       if (acc_type === 'client'){
         set_name(client_data?.first_name)
       }
-      if (acc_type === 'distributors'){
-        set_name(distributor_data?.company_name)
+      if (acc_type === 'distributor'){
+        set_name(distributor_data?.company_name || supplier_data?.company_name)
       }
-      if (acc_type === 'manufacturers'){
-        set_name(manufacturer_data?.company_name)
+      if (acc_type === 'manufacturer'){
+        set_name(manufacturer_data?.company_name || supplier_data?.company_name)
       }
       if (acc_type === 'salespersons'){
         set_name(salesperson_data?.first_name)
@@ -85,7 +87,7 @@ function SuspendAccountModal({
               isClosable: true,
             });
           }).catch((err)=>{
-            console.log(err)
+            //console.log(err)
             toast({
                       title: 'Error while suspending account',
                       description: err?.response?.data,
@@ -94,11 +96,11 @@ function SuspendAccountModal({
                   })
           })
           
-        }else if (acc_type === 'distributors'){
+        }else if (acc_type === 'distributor'){
           await Suspend_Distributor(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been suspended`,
+              description: `${name} has been suspended`,
               status: 'info',
               isClosable: true,
             });
@@ -111,11 +113,11 @@ function SuspendAccountModal({
                   })
           })
           
-        }else if (acc_type === 'manufacturers'){
+        }else if (acc_type === 'manufacturer'){
           await Suspend_Manufacturer(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been suspended`,
+              description: `${name} has been suspended`,
               status: 'info',
               isClosable: true,
             });
@@ -131,7 +133,7 @@ function SuspendAccountModal({
           await Suspend_Salesperson(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been suspended`,
+              description: `${name} has been suspended`,
               status: 'info',
               isClosable: true,
             });

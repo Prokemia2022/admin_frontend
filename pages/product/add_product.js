@@ -166,7 +166,7 @@ export default function Add_Product(){
 					Returns a alert modal to show the error.
 				*/
 				set_is_submitting(true);
-				console.log(payload);
+				//console.log(payload);
 				const response = await Add_New_Product(payload).then((res)=>{
 					/**
 						sends a payload data to server to add new product.
@@ -193,7 +193,7 @@ export default function Add_Product(){
 							auth_role,
 							status: 200
 						}
-						console.log(response)
+						//console.log(response)
 						cookies.set('saved_product_payload', response, { path: '/' });
 						return response;
 					}).catch((err)=>{
@@ -213,7 +213,7 @@ export default function Add_Product(){
 					}).finally(()=>{
 						set_is_submitting(false);
 					})
-				console.log(response)
+				//console.log(response)
 				return response;
 			}
 		}

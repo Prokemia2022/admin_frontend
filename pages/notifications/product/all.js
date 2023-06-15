@@ -4,6 +4,7 @@ import {useRouter} from 'next/router'
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import AddIcon from '@mui/icons-material/Add';
 import Get_Products from '../../api/Products/get_products.js'
+import styles from '../../../styles/Notifications.module.css'
 
 export default function Products(){
 	const router = useRouter();
@@ -12,7 +13,7 @@ export default function Products(){
 		await Get_Products().then((response)=>{
 			//console.log(response.data)
 			const data = response.data
-			const result = data.filter(v => !v.verification_status);
+			const result = data.filter(v => v.verification_status);
 			set_products(result)
 		})
 	}
@@ -27,7 +28,7 @@ export default function Products(){
 					<Text>You dont have any new products to verify.</Text>
 				</Flex>
 				:
-				<Flex direction='column' overflowY='scroll' h='80vh'>
+				<Flex className={styles.item_card_container}>
 					{products_data?.map((product)=>{
 						return(
 							<div key={product._id} style={{margin:'5px'}}>

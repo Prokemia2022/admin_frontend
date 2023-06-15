@@ -9,15 +9,19 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import VerifiedIcon from '@mui/icons-material/Verified';
 //components imports
-import Header from '../components/Header.js'
+import Header from '../components/Header.js';
+import Fetching_Data_Loading_Animation from '../components/Fetching_Loading_animation.js'
 //api-calls
 import Get_Products from './api/Products/get_products.js'
 import Get_Industries from './api/controls/get_industries';
 import Get_Technologies from './api/controls/get_technologies';
+//styles
+import styles from '../styles/Inventory.module.css'
 
 export default function Inventory(){
 	const router = useRouter();
 	const [products,set_products]=useState([]);
+	const [total_products,set_Total_products]=useState(0);
 	const [filter_active, set_filter_active] = useState(false);
 	const [search_query,set_search_query] = useState('');
 	const [industry,set_industry] = useState('');
@@ -42,7 +46,8 @@ export default function Inventory(){
 		set_is_fetching(true);
 		await Get_Products().then((response)=>{
 			//console.log(response.data)
-			const data = response.data
+			const data = response.data;
+			set_Total_products(data?.length);
 			const result =  data.filter(v => v.verification_status)
 			const result_data = result?.filter((item) => 	item?.industry.toLowerCase().includes(search_query.toLowerCase()) ||
 														item?.technology.toLowerCase().includes(search_query.toLowerCase()) ||
@@ -102,17 +107,17 @@ export default function Inventory(){
 	}
 
 	return(
-		<Flex direction='column' position='relative'>
+		<Flex direction='column' position='relative' h='100vh' bg='#eee'>
 			<Header/>
-			<Flex p='2' direction='column'>
-				<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Inventory ({products?.length})</Text>
+			<Flex direction='column' className={styles.products_filter_body}>
+				<Text m='1' fontFamily='ClearSans-Bold' fontSize='28px' >Inventory</Text>
 				{filter_active? 
 					<FilterBar technologies_data={technologies_data} industries_data={industries_data} set_filter_active={set_filter_active} set_industry={set_industry} set_technology={set_technology} set_search_query={set_search_query}/>
 					: null
 				}
-				<Flex gap='2' p='2' align='center'>
-					<Button bg='#eee' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
-					<Select placeholder='sort' value={sort} w='120px' onChange={((e)=>{set_sort(e.target.value)})}> 
+				<Flex gap='2' p='1' align='center' mt='-2'>
+					<Button bg='#fff' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
+					<Select bg='#fff' placeholder='sort' value={sort} w='120px' onChange={((e)=>{set_sort(e.target.value)})}> 
 						<option value='desc'>A - Z</option>
 						<option value='asc'>Z - A</option>
 						<option value='featured'>Featured</option>
@@ -123,17 +128,9 @@ export default function Inventory(){
 						null
 					}
 				</Flex>
-				<Flex gap='2' p='2'>
-					{search_query !== ''? 
-						<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_search_query('')})}>
-							<Text align='center' >{search_query}</Text>
-							<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
-						</Flex>
-						: 
-						null
-					}
+				<Flex gap='2' p='1'>
 					{sort !== 'desc'? 
-						<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort('desc')})}>
+						<Flex align='center' bg='#fff' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort('desc')})}>
 							<Text align='center' >{sort}</Text>
 							<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
 						</Flex>
@@ -141,31 +138,34 @@ export default function Inventory(){
 						null
 					}
 				</Flex>
-				<Flex gap='2' p='2'>
+				<Flex gap='2' p='1' mt='-2'>
 					<Input placeholder='search Products by Name, Industry, Technology...' value={search_query} bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
-				{is_fetching ?
-					<Flex direction={'column'} gap='2'>
-						<Loading_Product_Card />
-						<Loading_Product_Card />
-					</Flex>
+				<Flex bg='#fff' borderRadius={'0px'} m='1' p='2'>
+					<Text m='2' fontSize='12px' color='grey'>showing <span style={{color:"#009393",fontWeight:'bold'}}>{products?.length}</span> of <span style={{color:"#009393",fontWeight:'bold'}}>{total_products}</span></Text>
+				</Flex>
+			</Flex>
+			<Flex className={styles.products_container_body} p='1'>
+				{is_fetching || products?.length == 0 ?
+						<Flex justify={'center'} flex='1' align='center' direction={'column-reverse'}>
+							{products?.length == 0 ?
+								<Flex justify='center' align='center'>
+									<Text fontSize='' color='grey'>No items match your query</Text>
+								</Flex>
+								:
+								null
+							}
+							<Fetching_Data_Loading_Animation width={'250px'} height={'250px'} color={'#009393'}/>
+						</Flex>
 					:
-					<>
-						{products?.length === 0?
-							<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
-								<Text>Listed Products have not been verified <br/> or <br/> No products meet your search terms</Text>
-							</Flex>
-						:
-							<Flex direction='column' gap='2' justify=''>
-								{products?.map((product)=>{
-									return(
-										<Product_Item product={product} key={product._id} search_query={search_query}/>
-									)
-								})}
-							</Flex>
-						}
-					</>					
+						<Flex gap='1' flex='1' className={styles.products_container}>
+							{products?.map((product)=>{
+								return(
+									<Product_Item product={product} key={product._id} search_query={search_query}/>
+								)
+							})}
+						</Flex>		
 				}
 			</Flex>
 		</Flex>
@@ -220,7 +220,7 @@ const Product_Item=({product,search_query})=>{
 	let technology_highlight = product.technology.toLowerCase();
 	const router = useRouter()
 	return(
-		<Flex borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#fff' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1' position='relative'>
+		<Flex bg='#fff' borderLeft={product?.sponsored === true ?'4px solid gold': null} borderRadius={'0px'} justify='space-between' flex='' position='relative'>
 			{product?.suspension_status? <Flex bg={product?.suspension_status? 'red': '#fff'} zIndex='' h='100%' w='100%' position='absolute' top='0' right='0' opacity='0.3' onClick={(()=>{router.push(`product/${product?._id}`)})}/>: null}
 			<Flex direction='column' p='2'>
 				<Text fontSize='16px' fontFamily='ClearSans-Bold' color='#009393'>{product.name_of_product}</Text>
@@ -240,19 +240,6 @@ const Product_Item=({product,search_query})=>{
 					<Text fontWeight='bold' >Not Featured</Text>				
 				}
 				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`product/${product?._id}`)})}>View</Text>
-			</Flex>
-		</Flex>
-	)
-}
-
-const Loading_Product_Card=()=>{
-	return(
-		<Flex direction='column' h='100px' position='relative' gap='2' boxShadow='lg' p='2'>
-			<Flex bg='#eee' h='25px' w="80%" borderRadius='5px'/>
-			<Flex bg='#eee' h='25px' w="35%" borderRadius='5px'/>
-			<Flex gap='2' h='20px'>
-				<Flex bg='#eee' h='20px' w="25%" borderRadius='5px'/>
-				<Flex bg='#eee' h='20px' w="25%" borderRadius='5px'/>
 			</Flex>
 		</Flex>
 	)

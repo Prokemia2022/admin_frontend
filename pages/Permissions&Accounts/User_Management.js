@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import {Flex,Text,Button,Input,Image,InputGroup,InputRightElement,useToast} from '@chakra-ui/react';
+import {Flex,Text,Button,Input,Image,InputGroup,InputRightElement,useToast,Link} from '@chakra-ui/react';
 import Header from '../../components/Header.js';
 import AddNewAdmin from '../../components/modals/Admin/AddNewAdmin.js';
 import RemoveAdmin from '../../components/modals/Admin/RemoveAdmin.js';
@@ -26,6 +26,7 @@ export default function User_Management(){
 	const [total_users,set_total_users]=useState([]);
 	const [auth_role,set_auth_role]=useState("")
 	const [query,set_query]=useState('');
+	const [is_refresh,set_is_refresh]=useState(null);
 
 	const cookies = new Cookies();
 	const router = useRouter	();
@@ -35,13 +36,13 @@ export default function User_Management(){
 		let decoded = jwt_decode(token);
 		
 		//console.log(decoded)
-		if (decoded.role === 'IT' || decoded.role === 'Manager'){
+		if (decoded.role === 'Tech Support' || decoded.role === 'Manager'){
 			set_auth_role(decoded.role)
 			fetch_users()
 		}else{
 			router.back()
 		}
-	},[query]);
+	},[query,is_refresh]);
 
 	const fetch_users=async()=>{
 		Get_Admin_Users().then((response)=>{
@@ -61,7 +62,7 @@ export default function User_Management(){
 			<AddNewAdmin isaddnewadminModalvisible={isaddnewadminModalvisible} setisaddnewadminModalvisible={setisaddnewadminModalvisible}/>
 			<Flex direction='column' p='2' gap='2' bg='#eee' h='100vh'>
 				<Flex className={styles.page_infomation_details_Body} gap='3'>
-					<Flex className={styles.page_infomation_details_Description}>
+					<Flex className={styles.page_infomation_details_Description} >
 						<Text fontSize='28px' fontWeight='bold' className={styles.page_infomation_details_Title}>User Management</Text>
 						<Flex fontSize={'12px'} color='grey' gap='1' fontWeight={'bold'} className={styles.page_infomation_details_Link}>
 							<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/dashboard')})}>Dashboard</Text>
@@ -71,14 +72,14 @@ export default function User_Management(){
 							<Text>User Management</Text>		
 						</Flex>
 					</Flex>
-					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search} w='100%'>
+					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search}>
 						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'}>
 							<Input
-							type='text'
-							placeholder='Search User'
-							fontWeight={'bold'}
-							value={query}
-							onChange={((e)=>{set_query(e.target.value)})}
+								type='text'
+								placeholder='Search User'
+								fontWeight={'bold'}
+								value={query}
+								onChange={((e)=>{set_query(e.target.value)})}
 							/>
 							<InputRightElement >
 								{query.length > 0? <CloseIcon cursor='pointer' onClick={(()=>{set_query('')})}/> : <SearchIcon/>}
@@ -96,7 +97,7 @@ export default function User_Management(){
 					<Flex direction='column' gap='1' className={styles.fetched_data_container}>
 						{users?.map((user)=>{
 							return(
-								<Admin_User_Card_Item user={user} key={user?._id} auth_role={auth_role}/>
+								<Admin_User_Card_Item set_is_refresh={set_is_refresh} user={user} key={user?._id} auth_role={auth_role}/>
 							)
 						})}
 					</Flex>
@@ -106,7 +107,7 @@ export default function User_Management(){
 	)
 }
 
-const Admin_User_Card_Item=({user,auth_role})=>{
+const Admin_User_Card_Item=({user,auth_role,set_is_refresh})=>{
 	const router = useRouter();
     const toast = useToast();
 
@@ -127,7 +128,6 @@ const Admin_User_Card_Item=({user,auth_role})=>{
 				status: 'success',
 				isClosable: true,
 			});
-			router.reload()
 		  }).catch((err)=>{
 			//console.log(err)
 				toast({
@@ -138,6 +138,8 @@ const Admin_User_Card_Item=({user,auth_role})=>{
 					status: 'error',
 					isClosable: true,
 				})
+			}).finally(()=>{
+				set_is_refresh(true);
 			})
 	}
 	return(
@@ -146,10 +148,14 @@ const Admin_User_Card_Item=({user,auth_role})=>{
 			<Edit_Admin_User_Modal is_edit_admin_Modalvisible={is_edit_admin_Modalvisible} set_is_edit_admin_Modalvisible={set_is_edit_admin_Modalvisible} admin_data={user}/>
 			<Flex gap='1' align='center'>
 				{user.login_status? <CircleIcon style={{fontSize:'12px',color:'#5eff00'}}/> : <CircleIcon style={{fontSize:'12px',color:'red'}}/>}
-				<Image src={user?.user_image ? user?.user_image :'/Pro.png' } alt='pp' boxSize='42px' borderRadius='99px'/>
+				<Image src={user?.user_image ? user?.user_image :'/Pro.png' } alt='pp' boxSize='42px' borderRadius='99px' objectFit={'cover'}/>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='18px'>{user?.user_name}</Text>
-					<Text color='grey' fontSize='10px'>{user?.user_email? `${user?.user_email}` : '-'}</Text>
+					{user?.user_email?  
+						<Link href={`mailto: ${user?.user_email}`} isExternal color='#009393' cursor='pointer' fontSize='10px'>{user?.user_email}</Link>
+						:
+						'-'
+					}
 					<Text color='grey' fontSize='10px'>{user?.user_mobile? `${user?.user_mobile}` : '-'}</Text>
 				</Flex>
 			</Flex>

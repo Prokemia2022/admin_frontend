@@ -30,6 +30,7 @@ function Un_Suspend_Account_Modal({
       distributor_data,
       manufacturer_data,
       client_data,
+      supplier_data,
       salesperson_data,
       acc_type,
     payload
@@ -56,10 +57,10 @@ function Un_Suspend_Account_Modal({
       HandleModalOpen();
       if (acc_type === 'client')
         set_name(client_data?.first_name)
-      if (acc_type === 'distributors')
-        set_name(distributor_data?.company_name)
-      if (acc_type === 'manufacturers')
-        set_name(manufacturer_data?.company_name)
+      if (acc_type === 'distributor')
+        set_name(distributor_data?.company_name || supplier_data?.company_name)
+      if (acc_type === 'manufacturer')
+        set_name(manufacturer_data?.company_name || supplier_data?.company_name)
       if (acc_type === 'salespersons')
         set_name(salesperson_data?.first_name)
     },[is_un_suspend_Modal_visible])
@@ -72,7 +73,7 @@ function Un_Suspend_Account_Modal({
           await Un_Suspend_Client(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been activated`,
+              description: `${name} has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -84,11 +85,11 @@ function Un_Suspend_Account_Modal({
                       isClosable: true,
                   })
           })
-        }else if (acc_type === 'distributors'){
+        }else if (acc_type === 'distributor'){
           await Un_Suspend_Distributor(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been activated`,
+              description: `${name} has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -100,11 +101,11 @@ function Un_Suspend_Account_Modal({
                       isClosable: true,
                   })
           })
-        }else if (acc_type === 'manufacturers'){
+        }else if (acc_type === 'manufacturer'){
           await Un_Suspend_Manufacturer(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been activated`,
+              description: `${name} has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -120,7 +121,7 @@ function Un_Suspend_Account_Modal({
           await Un_Suspend_Salesperson(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been activated`,
+              description: `${name} has been activated`,
               status: 'info',
               isClosable: true,
             });

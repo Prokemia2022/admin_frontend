@@ -1,6 +1,6 @@
 .Menu_Bar_Body{
     flex-direction:column;
-    width: 50%;
+    width: 40%;
     height: 100vh;
     background-color: #090F14;
     position:fixed;
@@ -10,14 +10,18 @@
     overflow-y: scroll;
 }
 .Menu_Bar_Body::-webkit-scrollbar{
-   display: none;
+    display: none;
 }
 .Menu_items_container{
-    height:90%;
+    width: 100%;
     padding: 5px;
+    height: calc(100vh - 30vh);
+    overflow-y: scroll;
+    overflow-x: scroll;
 }
 .Menu_items_container::-webkit-scrollbar{
     width: 2px;
+    height: 2px;
 }
 .Menu_items_container::-webkit-scrollbar-thumb{
     background: #009393;

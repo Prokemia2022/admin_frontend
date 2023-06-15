@@ -2,6 +2,10 @@ import React,{useState,useEffect} from 'react'
 import {Flex,Image,Text,Input,Button,Select,Circle} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import Get_SalesPeople from '../../api/salespeople/get_salespeople.js';
+//components
+import Item_Card from '../../../components/Accounts_Notification_Card.js';
+//styles
+import styles from '../../../styles/Notifications.module.css'
 
 export default function Salespeople(){
 	const router = useRouter();
@@ -29,25 +33,14 @@ export default function Salespeople(){
 					<Text>You dont have new salespeople to verify.</Text>
 				</Flex>
 			:
-				<Flex direction='column' overflowY='scroll' h='90vh'>
+				<Flex className={styles.item_card_container}>
 					{salespeople_data?.map((item)=>{
 						return(
-							<Salesperson_Item item={item} key={item._id}/>
+							<Item_Card item={item} key={item._id} link={`/notifications/salesperson/${item?._id}`}/>
 						)
 					})}
 				</Flex>
 			}
-		</Flex>
-	)
-}
-
-const Salesperson_Item=({item})=>{
-	const router = useRouter()
-	return(
-		<Flex direction='column' m='1' gap='1' bg='#eee' borderRadius='5' boxShadow='lg' h='' p='1' >
-			<Text fontWeight='bold' fontSize='20px'>{item?.first_name} {item?.last_name}</Text>
-			<Text>Email: {item?.email_of_salesperson}</Text>
-			<Button onClick={(()=>{router.push(`/notifications/salesperson/${item?._id}`)})} bg='#000' color='#fff'>View</Button>
 		</Flex>
 	)
 }

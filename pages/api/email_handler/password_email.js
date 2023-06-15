@@ -4,7 +4,7 @@ export default async function Send_Password_Otp(payload) {
 	const env = process.env.NODE_ENV
     //console.log(env)
     if(env == "development"){
-        const result = await axios.post(" http://localhost:5001/api/otp_password_email",payload)
+        const result = await axios.post(" http://localhost:8080/api/otp_password_email",payload)
     	return result
     }
     else if (env == "production"){

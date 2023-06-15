@@ -27,6 +27,7 @@ import Cookies from 'universal-cookie';
 export default function Delete_Account_Modal({
     is_delete_Modalvisible,
     set_is_delete_Modal_visible,
+    supplier_data,
     distributor_data,
     manufacturer_data,
     client_data,
@@ -58,11 +59,11 @@ export default function Delete_Account_Modal({
       if (acc_type === 'client'){
         set_name(client_data?.first_name)
       }
-      if (acc_type === 'distributors'){
-        set_name(distributor_data?.company_name)
+      if (acc_type === 'distributor'){
+        set_name(distributor_data?.company_name || supplier_data?.company_name)
       }
-      if (acc_type === 'manufacturers'){
-        set_name(manufacturer_data?.company_name)
+      if (acc_type === 'manufacturer'){
+        set_name(manufacturer_data?.company_name || supplier_data?.company_name)
       }
       if (acc_type === 'salespersons'){
         set_name(salesperson_data?.first_name)
@@ -75,24 +76,8 @@ export default function Delete_Account_Modal({
     const handle_deletion=async()=>{
       if (confirm_name === name){  
         if (acc_type === 'client'){
-        //   await Suspend_Client(payload).then(()=>{
-        //     toast({
-        //       title: '',
-        //       description: `${name} account has been deleted`,
-        //       status: 'info',
-        //       isClosable: true,
-        //     });
-        //   }).catch((err)=>{
-        //     console.log(err)
-        //     toast({
-        //               title: 'Error while deleting account',
-        //               description: '',
-        //               status: 'error',
-        //               isClosable: true,
-        //           })
-        //   })
-          
-        }else if (acc_type === 'distributors'){
+          return ;
+        }else if (acc_type === 'distributor'){
           await Delete_Distributor(payload).then(()=>{
             toast({
               title: '',
@@ -111,7 +96,7 @@ export default function Delete_Account_Modal({
                   })
           })
           
-        }else if (acc_type === 'manufacturers'){
+        }else if (acc_type === 'manufacturer'){
           await Delete_Manufacturer(payload).then(()=>{
             toast({
               title: '',

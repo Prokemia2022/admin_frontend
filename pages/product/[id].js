@@ -1,9 +1,23 @@
 import {useState,useEffect} from 'react';
-import {Flex,Text,Button,Link,useToast} from '@chakra-ui/react';
+import {Flex,Text,Button,Link,useToast,Divider} from '@chakra-ui/react';
 import {useRouter} from 'next/router';
 //icons
 import DescriptionIcon from '@mui/icons-material/Description';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import NoAccountsIcon from '@mui/icons-material/NoAccounts';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
+import ArrowDropUpRoundedIcon from '@mui/icons-material/ArrowDropUpRounded';
+import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
+import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
+import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
 //components
 import QuotationModal from '../../components/modals/Quotation';
 import SampleModal from '../../components/modals/Sample.js';
@@ -46,7 +60,7 @@ export default function Product(){
 	const get_Data=async(payload)=>{
 		await Get_Product(payload).then((response)=>{
 			set_product_data(response.data)
-			//console.log(response.data)
+			console.log(response.data)
 		})
 	}
 	useEffect(()=>{
@@ -98,7 +112,7 @@ export default function Product(){
 				status: 'error',
 				isClosable: true,
 			});
-			console.log(err.response.data)
+			//console.log(err.response.data)
 		}).finally(()=>{
 			setTimeout(()=>{set_is_submitting(false)},1000)
 		})
@@ -123,7 +137,7 @@ export default function Product(){
 				status: 'error',
 				isClosable: true,
 			});
-			console.log(err.response.data)
+			//console.log(err.response.data)
 		}).finally(()=>{
 			setTimeout(()=>{set_is_submitting(false)},1000)
 		})
@@ -148,7 +162,7 @@ export default function Product(){
 				status: 'error',
 				isClosable: true,
 			});
-			console.log(err.response.data)
+			//console.log(err.response.data)
 		}).finally(()=>{
 			setTimeout(()=>{set_is_submitting(false)},1000)
 		})
@@ -173,7 +187,7 @@ export default function Product(){
 				status: 'error',
 				isClosable: true,
 			});
-			console.log(err.response.data)
+			//console.log(err.response.data)
 		}).finally(()=>{
 			setTimeout(()=>{set_is_submitting(false)},1000)
 		})
@@ -186,20 +200,31 @@ export default function Product(){
 			<Header/>
 			<Flex direction='column' gap='2' className={styles.productbody}>
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>
+				<Flex align='center' cursor={'pointer'} onClick={(()=>{router.back()})}>
+					<ArrowBackRoundedIcon style={{fontSize:'20px'}}/>
+					<Text>back</Text>
+				</Flex>
 				{product_data?.sponsored ? 
 					<Flex bg='#fff' p='1' borderRadius='5' cursor='pointer' boxShadow='lg' align='center' position='absolute' top='15px' right='15px'>
-						<Text fontWeight='bold' >Featured</Text>
-						<VerifiedIcon style={{color:'gold'}}/>
+					<Text fontWeight='bold' >Featured</Text>
+					<VerifiedIcon style={{color:'gold'}}/>
 					</Flex>
 					:
 					null
 				}
 				{!product_data?.verification_status?
 					<Flex bg='#fff' p='1' borderRadius='5' cursor='pointer' boxShadow='lg' align='center' position='absolute' top='50px' right='15px'>
-						<Text fontWeight='bold' color='red'>Suspended</Text>
+					<Text fontWeight='bold' color='red'>Suspended</Text>
 					</Flex>
 					:null
 				}
+				<Flex fontSize={'10px'} color='grey' gap='1' fontWeight={'bold'}>
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/dashboard')})}>Dashboard</Text>
+					<Text>&gt;</Text>
+					<Text onClick={(()=>{router.back()})} cursor={'pointer'}>inventory</Text>
+					<Text>&gt;</Text>
+					<Text>{product_data?.name_of_product}</Text>		
+				</Flex>
 				<Flex gap='2' fontSize={'14px'} color='grey'>
 					<Flex direction={'column'}>
 						<Text fontWeight={'bold'}>Industry:</Text>
@@ -258,31 +283,51 @@ export default function Product(){
                     color='#fff'
                     align='center'
 					m='2'
+					mb='4'
                 >
                     <Loading width='40px' height='40px' color='#ffffff'/>
                     saving product...
                 </Button>
                 :
-					<Flex p='2' gap='2' direction='column' w='100%'>
-						<Flex gap='2' direction='column'>
-							<Button  color='#fff' borderRadius='5' bg='#009393' onClick={(()=>{router.push(`/product/edit_config/${product_data?._id}`)})}>Edit Product</Button>
-							{product_data?.sponsored?
-								<Button  color='#fff' bg='#000' onClick={Handle_Un_Feature_Product}>Un Feature Product</Button>
-								:
-								<Button  color='#000' bg='gold' onClick={Handle_Feature_Product}>Feature Product</Button>
-							}
+					<Flex p='3' gap='2' direction={'column'} mt='-4' mb='4'>
+						<Text color='grey'>Actions</Text>
+						<Divider/>
+						<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{router.push(`/product/edit_config/${product_data?._id}`)})}>
+							<EditNoteRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
+							<Text color='grey' fontSize='14px'>Edit product</Text>
 						</Flex>
-						<Flex gap='2' direction='column'>
-							{product_data?.verification_status?
-								<Button  color='#fff' borderRadius='5' bg='#000' border='1px solid red' onClick={Handle_Suspend_Product}>Suspend Product</Button>
-								:
-								<Button  color='#fff' borderRadius='5' bg='#000' border='1px solid red' onClick={Handle_approve_Product}>Approve Product</Button>
-							}
-							<Button  color='red' borderRadius='5' bg='#fff' border='1px solid red' onClick={(()=>{set_is_delete_product_Modalvisible(true)})}>Delete Product</Button>
+						<Flex gap='3' align='center'>
+							<MarkEmailUnreadIcon style={{fontSize:'16px',color:'grey'}}/>
+							<Link color='grey' fontSize='14px' href={`mailto: ${product_data?.email_of_lister}`} isExternal>Email lister</Link>
 						</Flex>
-						<Button color='#000' borderRadius='5' bg='#eee' border='1px solid #000' onClick={(()=>{router.back()})}>Go back</Button>
-					</Flex>						
-            }
+						{!product_data?.verification_status? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={Handle_approve_Product}>
+								<InventoryRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
+								<Text color='grey' fontSize='14px'>Un suspend this product</Text>
+							</Flex>
+								: 
+							<Flex align='center' gap='2' cursor='pointer'  onClick={Handle_Suspend_Product}>
+								<HighlightOffRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
+								<Text color='grey' fontSize='14px'>Suspend this product</Text>
+							</Flex>
+						}
+						{product_data?.sponsored? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={Handle_Un_Feature_Product}>
+								<StarOutlineRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
+								<Text color='grey' fontSize='14px'>Un feature this product</Text>
+							</Flex>
+								: 
+							<Flex align='center' gap='2' cursor='pointer' onClick={Handle_Feature_Product}>
+								<StarRateRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
+								<Text color='grey' fontSize='14px'>Feature this product</Text>
+							</Flex>
+						}
+						<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_delete_product_Modalvisible(true)})}>
+							<DeleteRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
+							<Text color='red' fontWeight='bold'>Delete this product</Text>
+						</Flex>
+					</Flex>
+				}
 			</Flex>
 		</Flex>
 	)
