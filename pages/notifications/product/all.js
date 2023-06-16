@@ -1,8 +1,6 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Image,Text,Input,Button,Select,Circle} from '@chakra-ui/react'
-import {useRouter} from 'next/router'
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import AddIcon from '@mui/icons-material/Add';
+import {Flex,Text,} from '@chakra-ui/react';
+import {useRouter} from 'next/router';
 import Get_Products from '../../api/Products/get_products.js'
 import styles from '../../../styles/Notifications.module.css'
 
@@ -14,11 +12,11 @@ export default function Products(){
 			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.verification_status);
-			set_products(result)
+			set_products(result);
 		})
 	}
 	useEffect(()=>{
-		get_Products_Data()
+		get_Products_Data();
 	},[])
 	return(
 		<Flex direction='column' gap='3' p='2' w='100%'>
