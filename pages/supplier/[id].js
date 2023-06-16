@@ -481,7 +481,7 @@ const Product_Item=({product})=>{
 	const router = useRouter()
 	return(
 		<Flex h='80px' borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#eee' borderRadius='5px' boxShadow='sm' justify='space-between' position='relative'>
-			{product?.suspension_status? <Flex bg={product?.suspension_status? 'red': '#fff'} zIndex='' h='100%' w='100%' position='absolute' top='0' right='0' opacity='0.3' onClick={(()=>{router.push(`product/${product?._id}`)})}/>: null}
+			{product?.suspension_status? <Flex bg={product?.suspension_status? 'red': '#fff'} zIndex='' h='100%' w='100%' position='absolute' top='0' right='0' opacity='0.3' onClick={(()=>{router.push(`/product/${product?._id}`)})}/>: null}
 			<Flex direction='column' p='2'>
 				<Text fontSize='16px' fontFamily='ClearSans-Bold' color='#009393'>{product.name_of_product}</Text>
 				<Text fontSize='14px'>{product.distributed_by}</Text>

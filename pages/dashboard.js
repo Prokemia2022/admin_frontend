@@ -110,7 +110,7 @@ export default function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Manufacturers</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
+					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/supplier/${item?._id}?supplier=manufacturer&supplier_id=${item?._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
 					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('suppliers/manufacturers')})}>view all</Text>						
 				</Flex>
 			</Flex>
@@ -130,7 +130,7 @@ export default function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Distributors</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
+					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/supplier/${item?._id}?supplier=distributor&supplier_id=${item?._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
 					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('suppliers/distributors')})}>view all</Text>						
 				</Flex>
 			</Flex>
