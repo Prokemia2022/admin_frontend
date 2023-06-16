@@ -13,7 +13,7 @@ export default function Products(){
 		await Get_Products().then((response)=>{
 			//console.log(response.data)
 			const data = response.data
-			const result = data.filter(v => v.verification_status);
+			const result = data.filter(v => !v.verification_status);
 			set_products(result)
 		})
 	}
