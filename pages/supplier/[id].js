@@ -17,20 +17,28 @@ import Un_Subscribe_Distriutor from '../api/distributors/un_subscribe_account.js
 import Subscribe_Manufacturer from '../api/manufacturers/subscribe_account.js'
 import Un_Subscribe_Manufacturer from '../api/manufacturers/un_subscribe_manufacturer_account.js';
 
+import Verify_Distributor_Email from '../api/distributors/verify_distributor_email.js';
+import Un_Verify_Distributor_Email from '../api/distributors/un_verify_distributor_email.js';
+import Verify_Manufacturer_Email from '../api/manufacturers/verify_manufacturer_email.js';
+import Un_Verify_Manufacturer_Email from '../api/manufacturers/un_verify_manufacturer_email.js';
+
 import Get_Products from '../api/Products/get_products.js'
 //icons
 import VerifiedIcon from '@mui/icons-material/Verified';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
-import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
-import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
 import ArrowDropUpRoundedIcon from '@mui/icons-material/ArrowDropUpRounded';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import BusinessIcon from '@mui/icons-material/Business';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
+import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 //utils
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
@@ -56,6 +64,8 @@ export default function Supplier(){
 	const [is_delete_Modalvisible,set_is_delete_Modal_visible]=useState(false);
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
+
+	const [is_refresh_data,set_is_refresh]=useState(null);
 
 	const [supplier_data,set_supplier_data] = useState('')
 	const [products,set_products]=useState([]);
@@ -84,7 +94,7 @@ export default function Supplier(){
 		//console.log(payload)
         if(payload?.type == 'distributor'){
 			await Get_Distributor(payload).then((response)=>{
-				//console.log(response)
+				//console.log(response.data)
 				set_supplier_data(response?.data)
 				const email = response?.data?.email_of_company
 				get_products_data(email)
@@ -155,6 +165,8 @@ export default function Supplier(){
 					status: 'error',
 					isClosable: true,
 				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
 			})
 		}else if(supplier_details?.type == 'manufacturer'){
 			await Subscribe_Manufacturer(payload).then(()=>{
@@ -172,6 +184,8 @@ export default function Supplier(){
 					status: 'error',
 					isClosable: true,
 				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
 			})
 		}
 	}
@@ -192,6 +206,8 @@ export default function Supplier(){
 					status: 'error',
 					isClosable: true,
 				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
 			})
 		}else if(supplier_details?.type == 'manufacturer'){
 			await Un_Subscribe_Manufacturer(payload).then(()=>{
@@ -209,12 +225,98 @@ export default function Supplier(){
 					status: 'error',
 					isClosable: true,
 				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
+			})
+		}
+	}
+
+	const handle_verify_email_account=async()=>{
+		if (supplier_details?.type == 'distributor'){
+			await Verify_Distributor_Email(payload).then(()=>{
+				toast({
+					title: '',
+					description: `${supplier_data?.company_name}'s email has been verified.`,
+					status: 'info',
+					isClosable: true,
+				});
+			}).catch((err)=>{
+				////console.log(err)
+				toast({
+					title: '',
+					description: err.response?.data,
+					status: 'error',
+					isClosable: true,
+				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
+			})
+		}else if(supplier_details?.type == 'manufacturer'){
+			await Verify_Manufacturer_Email(payload).then(()=>{
+				toast({
+					title: '',
+					description: `${supplier_data?.company_name}'s email has been verified.`,
+					status: 'info',
+					isClosable: true,
+				});
+			}).catch((err)=>{
+				////console.log(err)
+				toast({
+					title: '',
+					description: err.response?.data,
+					status: 'error',
+					isClosable: true,
+				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
+			})
+		}
+	}
+
+	const handle_un_verify_email_account=async()=>{
+		if (supplier_details?.type == 'distributor'){
+			await Un_Verify_Distributor_Email(payload).then(()=>{
+				toast({
+					title: '',
+					description: `${supplier_data?.company_name}'s email has been un verified.`,
+					status: 'info',
+					isClosable: true,
+				});
+			}).catch((err)=>{
+				////console.log(err)
+				toast({
+					title: '',
+					description: err.response?.data,
+					status: 'error',
+					isClosable: true,
+				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
+			})
+		}else if(supplier_details?.type == 'manufacturer'){
+			await Un_Verify_Manufacturer_Email(payload).then(()=>{
+				toast({
+					title: '',
+					description: `${supplier_data?.company_name}'s email has been un verified.`,
+					status: 'info',
+					isClosable: true,
+				});
+			}).catch((err)=>{
+				////console.log(err)
+				toast({
+					title: '',
+					description: err.response?.data,
+					status: 'error',
+					isClosable: true,
+				});
+			}).finally(()=>{
+				set_is_refresh(!is_refresh_data)
 			})
 		}
 	}
 
 	useEffect(()=>{
-		if (!payload || supplier_details?.id === undefined){
+		if (!supplier_details?.id ){
 			toast({
 				title: '',
 				description: `...broken link,we are redirecting you`,
@@ -238,13 +340,13 @@ export default function Supplier(){
 	        //console.log(decoded);
 	        set_auth_role(decoded?.role)
 	      }
-	},[supplier_details?.id])
+	},[supplier_details?.id,is_refresh_data])
 	return(
 		<Flex direction='column' gap='2'>
 			<Header />
-			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} supplier_data={supplier_data} acc_type={supplier_details?.type} payload={payload}/>
-			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} supplier_data={supplier_data} acc_type={supplier_details?.type} payload={payload}/>
-			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} supplier_data={supplier_data} acc_type={supplier_details?.type} payload={payload}/>
+			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} supplier_data={supplier_data} acc_type={supplier_details?.type} payload={payload} set_is_refresh={set_is_refresh} is_refresh_data={is_refresh_data}/>
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} supplier_data={supplier_data} acc_type={supplier_details?.type} payload={payload} set_is_refresh={set_is_refresh} is_refresh_data={is_refresh_data}/>
+			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} supplier_data={supplier_data} acc_type={supplier_details?.type} payload={payload} set_is_refresh={set_is_refresh} is_refresh_data={is_refresh_data}/>
 			<Flex direction='column' p='2'>
 				<Flex p='1' direction='column' gap='1'>
                     <Flex mt='-2' p='2' mb={'-2'} fontSize={'10px'} color='grey' gap='1' fontWeight={'bold'}>
@@ -270,25 +372,36 @@ export default function Supplier(){
 						}
 						<Flex fontSize={'12px'} direction='column' ml='2' gap=''>
 							<Text fontSize='20px' fontWeight='bold'>{supplier_data?.company_name}</Text>
-							{supplier_data?.suspension_status? 
-								<Flex align='center' gap='2' cursor='pointer'>
-									<NoAccountsIcon style={{fontSize:'16px',color:'grey'}}/>
-									<Text fontWeight='bold' color='red'>suspended</Text>
+							{supplier_data?.valid_email_status?
+								<Flex align='center' gap='1' color='#009393'>
+									<MarkEmailReadIcon style={{fontSize:'18px'}}/>
+									<Text >Verified Email</Text>
 								</Flex>
-								: 
-								<Flex align='center' gap='2' cursor='pointer'>
-									<AccountCircleRoundedIcon style={{fontSize:'16px',color:'grey'}}/>
-									<Text fontWeight='bold' color='green'>active</Text>
+								:
+								<Flex align='center' gap='1' color='grey'>
+									<UnsubscribeIcon style={{fontSize:'18px'}}/>
+									<Text textDecoration='1px solid line-through' >Verified Email</Text>
+								</Flex>
+							}
+							{supplier_data?.suspension_status?
+								<Flex align='center' gap='1'>
+									<DisabledByDefaultRoundedIcon style={{fontSize:'18px',color:'red'}}/>
+									<Text color='red' >Suspended</Text>
+								</Flex>
+								:
+								<Flex align='center' gap='1' color='grey'>
+									<DisabledByDefaultRoundedIcon style={{fontSize:'18px'}}/>
+									<Text textDecoration='1px solid line-through' >Suspended</Text>
 								</Flex>
 							}
 							{supplier_data?.subscription? 
 								<Flex align='center' gap='2'>
-									<StarRateRoundedIcon style={{fontSize:'16px',color:'#009393'}}/>
+									<StarRateRoundedIcon style={{fontSize:'18px',color:'#009393'}}/>
 									<Text fontWeight='bold' color='grey'>subscribed</Text>
 								</Flex>
 							:
 								<Flex align='center' gap='2'>
-									<StarOutlineRoundedIcon style={{fontSize:'16px',color:'grey'}}/>
+									<StarOutlineRoundedIcon style={{fontSize:'18px',color:'grey'}}/>
 									<Text textDecoration={'1px solid line-through grey'} fontWeight='bold' color='grey' >subscribed</Text>
 								</Flex>
 							}
@@ -336,7 +449,7 @@ export default function Supplier(){
 					</Flex>
                     <Flex direction='column' gap='1' p='2' fontSize={'14px'}>
                         <Flex gap='' align='center'>
-							<Text fontWeight='bold'>Industries</Text>
+							<Text fontWeight='bold'>Industries [{industries?.length}]</Text>
 							{view_industries_active? 
 								<ArrowDropUpRoundedIcon style={{fontSize:'24px',color:'grey',cursor:'pointer'}} onClick={(()=>{set_view_industries_active(false)})}/>	
 								:
@@ -366,7 +479,7 @@ export default function Supplier(){
 					</Flex>
                     <Flex direction='column' gap='1' p='2' fontSize={'14px'}>
                         <Flex gap='' align='center'>
-							<Text fontWeight='bold'>Experts</Text>
+							<Text fontWeight='bold'>Experts [{supplier_data?.experts?.length}]</Text>
 							{view_experts_active? 
 								<ArrowDropUpRoundedIcon style={{fontSize:'24px',color:'grey',cursor:'pointer'}} onClick={(()=>{set_view_experts_active(false)})}/>	
 								:
@@ -404,7 +517,7 @@ export default function Supplier(){
 					</Flex>
                     <Flex direction='column' gap='1' p='2' fontSize={'14px'}>
                         <Flex gap='' align='center'>
-							<Text fontWeight='bold'>Products</Text>
+							<Text fontWeight='bold'>Products  [{products?.length}]</Text>
 							{view_products_active? 
 								<ArrowDropUpRoundedIcon style={{fontSize:'24px',color:'grey',cursor:'pointer'}} onClick={(()=>{set_view_products_active(false)})}/>	
 								:
@@ -431,40 +544,53 @@ export default function Supplier(){
 							null
 						}
 					</Flex>
-                    <Flex p='3' gap='2' direction={'column'} mt='-4'>
-						<Text color='grey'>Actions</Text>
-						<Divider/>
-						<Flex gap='3' align='center'>
-							<MarkEmailUnreadIcon style={{fontSize:'16px',color:'grey'}}/>
-							<Link color='grey' fontSize='14px' href={`mailto: ${supplier_data?.email_of_company}`} isExternal>Email {supplier_details?.type}</Link>
+					<Flex p='2' gap='2' direction={'column'} bg='#e3e3e3' borderRadius={'5'}>
+						<Flex fontWeight={'bold'} borderBottom={'1px solid #fff'} pb='2'>
+							<EditNoteIcon/>
+							<Text >Actions</Text>
 						</Flex>
-						{supplier_data?.suspension_status? 
-							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>
-								<AccountCircleRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
-								<Text color='grey' fontSize='14px'>Un suspend account</Text>
+						<Flex gap='3' align='center' borderBottom={'1px solid #fff'} pb='2'>
+							<MarkEmailUnreadIcon style={{fontSize:'16px',}}/>
+							<Link color='grey' fontSize='14px' href={`mailto: ${supplier_data?.email_of_company}`} isExternal>Email this supplier</Link>
+						</Flex>
+						{supplier_data?.subscription? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={handle_un_subscribe_account} borderBottom={'1px solid #fff'} pb='2'>
+								<StarOutlineRoundedIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Un subscribe this supplier</Text>
 							</Flex>
 								: 
-							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{setissuspendModalvisible(true)})}>
-								<NoAccountsIcon style={{fontSize:'20px',color:'grey'}}/>
-								<Text color='grey' fontSize='14px'>Suspend Account</Text>
+							<Flex align='center' gap='2' cursor='pointer'onClick={handle_subscribe_account} borderBottom={'1px solid #fff'} pb='2'>
+								<StarRateRoundedIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Subscribe this supplier</Text>
 							</Flex>
 						}
-                        {supplier_data?.subscription? 
-							<Flex align='center' gap='2' cursor='pointer' onClick={handle_un_subscribe_account}>
-								<StarOutlineRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
-								<Text color='grey' fontSize='14px'>un subscribe account</Text>
+						{supplier_data?.valid_email_status? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={handle_un_verify_email_account} borderBottom={'1px solid #fff'} pb='2'>
+								<UnsubscribeIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Un verify email from this supplier</Text>
 							</Flex>
 								: 
-							<Flex align='center' gap='2' cursor='pointer' onClick={handle_subscribe_account}>
-								<StarRateRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
-								<Text color='grey' fontSize='14px'>subscribe Account</Text>
+							<Flex align='center' gap='2' cursor='pointer'onClick={handle_verify_email_account} borderBottom={'1px solid #fff'} pb='2'>
+								<MarkEmailReadIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>verify email from this supplier</Text>
+							</Flex>
+						}
+						{supplier_data?.suspension_status? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})} borderBottom={'1px solid #fff'} pb='2'>
+								<BusinessIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Un suspend this supplier</Text>
+							</Flex>
+								: 
+							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{setissuspendModalvisible(true)})} borderBottom={'1px solid #fff'} pb='2'>
+								<BusinessIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Suspend this supplier</Text>
 							</Flex>
 						}
 						<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_delete_Modal_visible(true)})}>
-							<DeleteRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
-							<Text color='red' fontWeight='bold'>Delete Account</Text>
+							<DeleteRoundedIcon style={{fontSize:'20px',}}/>
+							<Text color='red' fontWeight='bold'>Delete this supplier</Text>
 						</Flex>
-					</Flex>			
+					</Flex>		
 				</Flex>
 			</Flex>
 		</Flex>
@@ -473,7 +599,7 @@ export default function Supplier(){
 
 const Industry=({item})=>{
 	return(
-		<Text fontSize='14px'>- {item}</Text>
+		<Text fontSize='14px'>- {item? item : '-'}</Text>
 	)
 }
 
@@ -481,7 +607,7 @@ const Product_Item=({product})=>{
 	const router = useRouter()
 	return(
 		<Flex h='80px' borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#eee' borderRadius='5px' boxShadow='sm' justify='space-between' position='relative'>
-			{product?.suspension_status? <Flex bg={product?.suspension_status? 'red': '#fff'} zIndex='' h='100%' w='100%' position='absolute' top='0' right='0' opacity='0.3' onClick={(()=>{router.push(`/product/${product?._id}`)})}/>: null}
+			{product?.suspension_status? <Flex bg={product?.suspension_status? 'red': '#fff'} zIndex='' h='100%' w='100%' position='absolute' top='0' right='0' opacity='0.3' />: null}
 			<Flex direction='column' p='2'>
 				<Text fontSize='16px' fontFamily='ClearSans-Bold' color='#009393'>{product.name_of_product}</Text>
 				<Text fontSize='14px'>{product.distributed_by}</Text>
@@ -499,7 +625,7 @@ const Product_Item=({product})=>{
 					:
 					<Text fontWeight='bold' >Not Featured</Text>				
 				}
-				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`product/${product?._id}`)})}>View</Text>
+				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`/product/${product?._id}`)})}>View</Text>
 			</Flex>
 		</Flex>
 	)

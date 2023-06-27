@@ -128,7 +128,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
                 </Flex>
                 <Flex direction='column'>
                   <Text>Description</Text>
-                  <Input type='text' placeholder='describe the technology' variant='filled' onChange={((e)=>{set_description(e.target.value)})}/>
+                  <Textarea type='text' placeholder='describe the technology' variant='filled' onChange={((e)=>{set_description(e.target.value)})}/>
                 </Flex>
                 {image_uploaded?
                   <Uploaded name={image.name}/>

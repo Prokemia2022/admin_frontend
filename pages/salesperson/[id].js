@@ -17,20 +17,28 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded';
 import ArrowDropUpRoundedIcon from '@mui/icons-material/ArrowDropUpRounded';
+import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 //api calls
 import Get_SalesPerson from '../api/salespeople/get_salesperson.js'
 import Get_Orders from '../api/orders/get_orders.js';
+import Verify_Salesperson_Email from '../api/salespeople/verify_salesperson_email.js';
 //utils
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 //styles
 import styles from '../../styles/Inventory.module.css'
+import Un_Verify_Salesperson_Email from '../api/salespeople/un_verify_salesperson_email.js';
 
 function Salesperson(){
 	const [is_delete_Modalvisible,set_is_delete_Modal_visible]=useState(false);
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
+
+	const [is_refresh_data,set_is_refresh]=useState(null);
 
 	const toast = useToast();
 	const router = useRouter();
@@ -62,7 +70,7 @@ function Salesperson(){
 
 	const get_data=async(payload)=>{
 		await Get_SalesPerson(payload).then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const email = response.data?.email_of_salesperson
 			set_salesperson_data(response.data)
 			fetch_orders(email)
@@ -100,8 +108,50 @@ function Salesperson(){
 		})
 	}
 
+	const handle_verify_email_account=async()=>{
+		await Verify_Salesperson_Email(payload).then(()=>{
+			toast({
+				title: '',
+				description: `${salesperson_data?.first_name}'s email has been verified.`,
+				status: 'info',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			////console.log(err)
+			toast({
+				title: '',
+				description: err.response?.data,
+				status: 'error',
+				isClosable: true,
+			});
+		}).finally(()=>{
+			set_is_refresh(!is_refresh_data)
+		})
+	}
+
+	const handle_un_verify_email_account=async()=>{
+		await Un_Verify_Salesperson_Email(payload).then(()=>{
+			toast({
+				title: '',
+				description: `${salesperson_data?.first_name}'s email has been un verified.`,
+				status: 'info',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			////console.log(err)
+			toast({
+				title: '',
+				description: err.response?.data,
+				status: 'error',
+				isClosable: true,
+			});
+		}).finally(()=>{
+			set_is_refresh(!is_refresh_data)
+		})
+	}
+
 	useEffect(()=>{
-		if (!payload || id === undefined){
+		if (!id){
 			toast({
               title: '',
               description: `...broken link, redirecting you.`,
@@ -125,7 +175,7 @@ function Salesperson(){
 	        //console.log(decoded);
 	        set_auth_role(decoded?.role)
 	      }
-	},[sort_value,toDate,fromDate])
+	},[sort_value,toDate,fromDate,is_refresh_data])
 	const Clear_Filter=()=>{
 		set_sort_value('')
 		set_fromDate('')
@@ -133,9 +183,9 @@ function Salesperson(){
 	}
 	return(
 		<Flex direction='column' gap='2'>
-			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
-			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
-			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
+			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload} set_is_refresh={set_is_refresh} is_refresh_data={is_refresh_data}/>
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload} set_is_refresh={set_is_refresh} is_refresh_data={is_refresh_data}/>
+			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload} set_is_refresh={set_is_refresh} is_refresh_data={is_refresh_data}/>
 			<Header />
 			<Flex p='1' direction='column'>
 				<Flex mt='-2' p='2' mb={'-2'} fontSize={'10px'} color='grey' gap='1' fontWeight={'bold'}>
@@ -162,15 +212,26 @@ function Salesperson(){
 						}
 						<Flex fontSize={'12px'} direction='column' ml='2'>
 							<Text fontSize='20px' fontWeight='bold'>{salesperson_data?.first_name} {salesperson_data?.last_name}</Text>
-							{salesperson_data?.suspension_status? 
-								<Flex align='center' gap='2' cursor='pointer'>
-									<NoAccountsIcon style={{fontSize:'16px',color:'grey'}}/>
-									<Text fontWeight='bold' color='red'>suspended</Text>
+							{salesperson_data?.valid_email_status?
+								<Flex align='center' gap='1' color='#009393'>
+									<MarkEmailReadIcon style={{fontSize:'18px'}}/>
+									<Text >Verified Email</Text>
 								</Flex>
-								: 
-								<Flex align='center' gap='2' cursor='pointer'>
-									<AccountCircleRoundedIcon style={{fontSize:'16px',color:'grey'}}/>
-									<Text fontWeight='bold' color='green'>active</Text>
+								:
+								<Flex align='center' gap='1' color='grey'>
+									<UnsubscribeIcon style={{fontSize:'18px'}}/>
+									<Text textDecoration='1px solid line-through' >Verified Email</Text>
+								</Flex>
+							}
+							{salesperson_data?.suspension_status?
+								<Flex align='center' gap='1'>
+									<DisabledByDefaultRoundedIcon style={{fontSize:'18px',color:'red'}}/>
+									<Text color='red' >Suspended</Text>
+								</Flex>
+								:
+								<Flex align='center' gap='1' color='grey'>
+									<DisabledByDefaultRoundedIcon style={{fontSize:'18px'}}/>
+									<Text textDecoration='1px solid line-through' >Suspended</Text>
 								</Flex>
 							}
 							{salesperson_data?.open_to_consultancy? 
@@ -188,10 +249,11 @@ function Salesperson(){
 					</Flex>
 				</Flex>
 				<Flex flex='1' gap='1' fontSize='14px' p='2' direction='column' bg='#fff' m='2' borderRadius='5px' boxShadow='md'>
-					<Text><span style={{color:'grey'}}>Email:</span>&ensp;&ensp;&ensp;&ensp;&ensp;{salesperson_data?.email_of_salesperson}</Text>
-					<Text><span style={{color:'grey'}}>Mobile:</span>&ensp;&ensp;&ensp;&ensp;{salesperson_data?.mobile_of_salesperson}</Text>
-					<Text><span style={{color:'grey'}}>Company:</span>&ensp;&nbsp;{salesperson_data?.company_name}</Text>
-					<Text><span style={{color:'grey'}}>Address</span>&ensp;&ensp;&ensp;&nbsp;{salesperson_data?.address}</Text>
+					<Text><span style={{color:'grey'}}>Email:</span>&ensp;&ensp;&ensp;&ensp;&ensp;{salesperson_data?.email_of_salesperson ? salesperson_data?.email_of_salesperson : '-'}</Text>
+					<Text><span style={{color:'grey'}}>Mobile:</span>&ensp;&ensp;&ensp;&ensp;{salesperson_data?.mobile_of_salesperson ? salesperson_data?.mobile_of_salesperson : '-'}</Text>
+					<Text><span style={{color:'grey'}}>Gender:</span>&ensp;&ensp;&ensp;&ensp;{salesperson_data?.gender ? salesperson_data?.gender : '-'}</Text>
+					<Text><span style={{color:'grey'}}>Company:</span>&ensp;&nbsp;{salesperson_data?.company_name ? salesperson_data?.company_name : '-'}</Text>
+					<Text><span style={{color:'grey'}}>Address</span>&ensp;&ensp;&ensp;&nbsp;{salesperson_data?.address ? salesperson_data?.address : '-'}</Text>
 					<Text><span style={{color:'grey'}}>Joined in:</span>&ensp;&nbsp;&nbsp;{moment( salesperson_data?.joined_in).format("MMM Do YY")}</Text>
 				</Flex>
  				<Flex direction='column' gap='1' p='2' fontSize={'14px'}>
@@ -204,7 +266,7 @@ function Salesperson(){
 							}
 						</Flex>
 						{view_bio_active? 
-							<Text p='2' bg='#eee' borderRadius='5' boxShadow='lg'>{salesperson_data?.bio}</Text>
+							<Text p='2' bg='#eee' borderRadius='5' boxShadow='sm'>{salesperson_data?.bio ? salesperson_data?.bio : 'no information'}</Text>
 							:
 							null
 						}
@@ -220,7 +282,7 @@ function Salesperson(){
 							}
 						</Flex>
 						{view_payment_info_active? 
-							<Text p='2' bg='#eee' borderRadius='5' boxShadow='lg'>{salesperson_data?.payment_method}</Text>
+							<Text p='2' bg='#eee' borderRadius='5' boxShadow='sm'>{salesperson_data?.payment_method ? salesperson_data?.payment_method : 'no information'}</Text>
 							:
 							null
 						}
@@ -236,7 +298,7 @@ function Salesperson(){
 							}
 						</Flex>
 						{view_sales_summary_info_active? 
-							<Flex direction='column' gap='2' bg='#eee' p='1' boxShadow='lg'>
+							<Flex direction='column' gap='2' bg='#eee' p='1' boxShadow='sm' borderRadius={'5'} pl='2'>
 								<Text><span style={{fontWeight:'bold'}}>Number of sales</span>: {orders_data?.length}</Text>
 								<Text> <span style={{fontWeight:'bold'}}>Total</span> : KES {total}</Text>
 							</Flex>
@@ -297,27 +359,40 @@ function Salesperson(){
 							null
 						}
 					</Flex>
-					<Flex p='3' gap='2' direction={'column'} mt='-4'>
-						<Text color='grey'>Actions</Text>
-						<Divider/>
-						<Flex gap='3' align='center'>
-							<MarkEmailUnreadIcon style={{fontSize:'16px',color:'grey'}}/>
+					<Flex p='2' gap='2' direction={'column'} bg='#e3e3e3' borderRadius={'5'}>
+						<Flex fontWeight={'bold'} borderBottom={'1px solid #fff'} pb='2'>
+							<EditNoteIcon/>
+							<Text >Actions</Text>
+						</Flex>
+						<Flex gap='3' align='center' borderBottom={'1px solid #fff'} pb='2'>
+							<MarkEmailUnreadIcon style={{fontSize:'16px',}}/>
 							<Link color='grey' fontSize='14px' href={`mailto: ${salesperson_data?.email_of_salesperson}`} isExternal>Email salesperson</Link>
 						</Flex>
-						{salesperson_data?.suspension_status? 
-							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>
-								<AccountCircleRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
-								<Text color='grey' fontSize='14px'>Un suspend account</Text>
+						{salesperson_data?.valid_email_status? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={handle_un_verify_email_account} borderBottom={'1px solid #fff'} pb='2'>
+								<UnsubscribeIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Un verify email from this salesperson</Text>
 							</Flex>
 								: 
-							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{setissuspendModalvisible(true)})}>
-								<NoAccountsIcon style={{fontSize:'20px',color:'grey'}}/>
-								<Text color='grey' fontSize='14px'>Suspend Account</Text>
+							<Flex align='center' gap='2' cursor='pointer'onClick={handle_verify_email_account} borderBottom={'1px solid #fff'} pb='2'>
+								<MarkEmailReadIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>verify email from this salesperson</Text>
+							</Flex>
+						}
+						{salesperson_data?.suspension_status? 
+							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})} borderBottom={'1px solid #fff'} pb='2'>
+								<AccountCircleRoundedIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Un suspend this account</Text>
+							</Flex>
+								: 
+							<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{setissuspendModalvisible(true)})} borderBottom={'1px solid #fff'} pb='2'>
+								<NoAccountsIcon style={{fontSize:'20px',}}/>
+								<Text color='grey' fontSize='14px'>Suspend this account</Text>
 							</Flex>
 						}
 						<Flex align='center' gap='2' cursor='pointer' onClick={(()=>{set_is_delete_Modal_visible(true)})}>
-							<DeleteRoundedIcon style={{fontSize:'20px',color:'grey'}}/>
-							<Text color='red' fontWeight='bold'>Delete Account</Text>
+							<DeleteRoundedIcon style={{fontSize:'20px',}}/>
+							<Text color='red' fontWeight='bold'>Delete this account</Text>
 						</Flex>
 					</Flex>
 			</Flex>
@@ -331,13 +406,14 @@ const OrderItem=({order})=>{
 	const router = useRouter();
 	return(
 		<Flex boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order?._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative'>
-			<Text fontSize='20px' fontWeight='bold'>Company name: {order?.company_name_of_client}</Text>
+			<Text fontSize='18px' fontWeight='bold'>Company name: {order?.company_name_of_client}</Text>
 			<Text>Product Name: {order?.name_of_product}</Text>
 			<Text>Total: {order?.total}</Text>
 			<Flex gap='1'>
 				<Text>Order Status:</Text>
 				<Text color={order?.order_status === 'completed'? 'green' : 'orange'}>{order?.order_status}</Text>
 			</Flex>
+			<Text color='grey'>{moment( order?.createdAt).format("MMM Do YY")}</Text>
 		</Flex>
 	)
 }

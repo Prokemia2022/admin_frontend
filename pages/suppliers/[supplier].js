@@ -1,6 +1,6 @@
 //modules
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Input,Image,Select, Divider,useToast} from '@chakra-ui/react'
+import {Flex,Text,Button,Input,Image,Select, Divider,useToast,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverBody,PopoverFooter,PopoverArrow,PopoverCloseButton,PopoverAnchor,} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 //api
 import Get_Distributors from '../api/distributors/get_distributors.js';
@@ -13,7 +13,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
+
 import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
+import BusinessIcon from '@mui/icons-material/Business';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 //components
 import Header from '../../components/Header.js';
 import Fetching_Data_Loading_Animation from '../../components/Fetching_Loading_animation.js'
@@ -349,35 +356,88 @@ const Supplier_Card_Item=({suppliers_data,supplier_details_path})=>{
 					</Flex>
 			</Flex>
 			<Flex gap='' mr='2'>
+				{suppliers_data?.valid_email_status?
+					<MarkEmailReadIcon style={{fontSize:'20px',color:'#009393'}}/>
+					:
+					null
+				}
+				{suppliers_data?.subscription?
+					<StarRateRoundedIcon style={{fontSize:'20px',color:'#009393'}}/>
+					:
+					null
+				}
 				{suppliers_data?.suspension_status?
 					<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
 					:
 					null
 				}
-				{suppliers_data?.subscription?
-					<StarRateRoundedIcon style={{fontSize:'20px',color:'#009393',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
-					:
-					null
-				}
-				{is_view_active?
-				<MoreVertIcon style={{fontSize:'20px',color:'#009393',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
-				:
-				<MoreVertIcon style={{fontSize:'20px',color:'grey',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
-				}
+				<Popover placement='left-start'>
+					<PopoverTrigger>
+						<MoreVertIcon style={{fontSize:'20px',color:'grey',cursor:'pointer'}}/>
+					</PopoverTrigger>
+					<PopoverContent>
+						<PopoverArrow />
+						<PopoverCloseButton />
+						<PopoverHeader fontSize='14px'>
+							<Text fontWeight='bold'>
+								{suppliers_data?.company_name}
+							</Text>
+						</PopoverHeader>
+						<PopoverBody>
+							<Flex direction='column' fontSize='10px' gap='1'>
+								<Flex align='center' gap='1' fontSize='11px' fontWeight='bold' color='grey'>
+									<PhoneAndroidIcon style={{fontSize:'18px'}}/>
+									<Text >
+										{suppliers_data?.mobile_of_company? suppliers_data?.mobile_of_company : '-'}
+									</Text>
+								</Flex>
+								<Flex align='center' gap='1'>
+									<BusinessIcon style={{fontSize:'20px'}}/>
+									<Text fontWeight='bold'>{suppliers_data?.company_name? suppliers_data?.company_name : '-'}</Text>
+								</Flex>
+								{suppliers_data?.valid_email_status?
+									<Flex align='center' gap='1' color='#009393'>
+										<MarkEmailReadIcon style={{fontSize:'20px'}}/>
+										<Text fontWeight='bold'>Verified Email</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<UnsubscribeIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Verified Email</Text>
+									</Flex>
+								}
+								{suppliers_data?.subscription?
+									<Flex align='center' gap='1' color='#009393'>
+										<StarRateRoundedIcon style={{fontSize:'20px'}}/>
+										<Text fontWeight='bold'>Subscribed</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<StarOutlineRoundedIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Subscribed</Text>
+									</Flex>
+								}
+								{suppliers_data?.suspension_status?
+									<Flex align='center' gap='1'>
+										<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red'}}/>
+										<Text color='red' fontWeight='bold'>Suspended</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<DisabledByDefaultRoundedIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Suspended</Text>
+									</Flex>
+								}
+								<Divider/>
+								<Flex cursor='pointer' gap='2' align='center' onClick={(()=>{router.push(`/supplier/${suppliers_data?._id}?supplier=${supplier_details_path}&supplier_id=${suppliers_data?._id}`)})}>
+									<VisibilityIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
+									<Text>Manage this supplier</Text>
+								</Flex>
+							</Flex>
+						</PopoverBody>
+					</PopoverContent>
+				</Popover>
 			</Flex>
-			{is_view_active? 
-				<Flex direction='column' boxShadow='lg' cursor='pointer' w='120px' bg='#fff' borderRadius='5' position='absolute' bottom='-30px' right='20px' p='2' zIndex='100'>
-					<Flex align='center' onClick={(()=>{router.push(`/supplier/${suppliers_data?._id}?supplier=${supplier_details_path}&supplier_id=${suppliers_data?._id}`)})}>
-						<Text>View</Text>
-						<ArrowRightAltIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
-					</Flex>
-					<Divider/>
-					{suppliers_data?.subscription? <Text fontSize='12px' fontWeight='bold' color='#009393'>subscribed</Text>:null}
-					<Divider/>
-					{suppliers_data?.suspension_status? <Text fontSize='12px' fontWeight='bold' color='red'>suspended</Text>:null}
-				</Flex>
-				:
-			null}
 		</Flex>
 	)
 }
