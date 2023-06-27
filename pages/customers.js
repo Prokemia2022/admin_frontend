@@ -1,8 +1,7 @@
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Input,Image,Select,Divider} from '@chakra-ui/react'
+import {Flex,Text,Button,Input,Image,Select,Divider,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverBody,PopoverFooter,PopoverArrow,PopoverCloseButton,PopoverAnchor,} from '@chakra-ui/react'
 //components
 import Header from '../components/Header.js'
-import FilterCustomerModal from '../components/modals/filterCustomer.js';
 import Fetching_Data_Loading_Animation from '../components/Fetching_Loading_animation.js';
 //api
 import Get_Clients from './api/clients/get_clients.js';
@@ -15,6 +14,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
+import BusinessIcon from '@mui/icons-material/Business';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
  
 function Customers(){
 	const router = useRouter();
@@ -31,6 +35,7 @@ function Customers(){
 		Get_Clients().then((response)=>{
 			set_is_fetching(true);
 			const data = response.data
+			//console.log(data)
 			if (sort == 'desc'){
 				const sorted_result = data.sort((a, b) => a.first_name.localeCompare(b.first_name))
 				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
@@ -133,20 +138,75 @@ const Customer_Card_Item=({client_data})=>{
 					borderRadius='5'/>
 					<Flex direction='column' >
 						<Text fontWeight='bold' fontSize='16px'>{client_data?.first_name} {client_data?.last_name}</Text>
-						<Text color='grey' fontSize='12px'>{client_data?.email_of_salesperson}</Text>
+						<Text color='grey' fontSize='12px'>{client_data?.email_of_company}</Text>
 					</Flex>
 			</Flex>
-			<Flex gap='' mr='2'>
+			<Flex gap='1' mr='2' align={'center'}>
 				{client_data?.suspension_status?
-					<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
+					<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red',cursor:'pointer'}}/>
 					:
 					null
 				}
-				{is_view_active?
-					<MoreVertIcon style={{fontSize:'20px',color:'#009393',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
+				{client_data?.valid_email_status?
+					<MarkEmailReadIcon style={{fontSize:'16px',color:'#009393'}}/>
 					:
-					<MoreVertIcon style={{fontSize:'20px',color:'grey',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
+					null
 				}
+				<Popover placement='left-start'>
+					<PopoverTrigger>
+						<MoreVertIcon style={{fontSize:'20px',color:'grey',cursor:'pointer'}}/>
+					</PopoverTrigger>
+					<PopoverContent>
+						<PopoverArrow />
+						<PopoverCloseButton />
+						<PopoverHeader fontSize='14px'>
+							<Text fontWeight='bold'>
+								{client_data?.first_name} {client_data?.last_name}
+							</Text>
+						</PopoverHeader>
+						<PopoverBody>
+							<Flex direction='column' fontSize='10px' gap='1'>
+								<Flex align='center' gap='1' fontSize='11px' fontWeight='bold' color='grey'>
+									<PhoneAndroidIcon style={{fontSize:'18px'}}/>
+									<Text >
+										{client_data?.mobile_of_company? client_data?.mobile_of_company : '-'}
+									</Text>
+								</Flex>
+								<Flex align='center' gap='1'>
+									<BusinessIcon style={{fontSize:'20px'}}/>
+									<Text fontWeight='bold'>{client_data?.company_name? client_data?.company_name : '-'}</Text>
+								</Flex>
+								{client_data?.valid_email_status?
+									<Flex align='center' gap='1' color='#009393'>
+										<MarkEmailReadIcon style={{fontSize:'20px'}}/>
+										<Text fontWeight='bold'>Verified Email</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<UnsubscribeIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Verified Email</Text>
+									</Flex>
+								}
+								{client_data?.suspension_status?
+									<Flex align='center' gap='1'>
+										<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red'}}/>
+										<Text color='red' fontWeight='bold'>Suspended</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<DisabledByDefaultRoundedIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Suspended</Text>
+									</Flex>
+								}
+								<Divider/>
+								<Flex cursor='pointer' gap='2' align='center' onClick={(()=>{router.push(`/customer/${client_data?._id}`)})}>
+									<VisibilityIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
+									<Text>Manage this customer</Text>
+								</Flex>
+							</Flex>
+						</PopoverBody>
+					</PopoverContent>
+				</Popover>
 			</Flex>
 			{is_view_active? 
 				<Flex direction='column' boxShadow='lg' cursor='pointer' w='120px' bg='#fff' borderRadius='5' position='absolute' bottom='-30px' right='20px' p='2' zIndex='100'>

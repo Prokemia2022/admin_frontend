@@ -33,7 +33,9 @@ function Un_Suspend_Account_Modal({
       supplier_data,
       salesperson_data,
       acc_type,
-    payload
+      payload,
+      set_is_refresh,
+      is_refresh_data
     }){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter();
@@ -73,7 +75,9 @@ function Un_Suspend_Account_Modal({
           await Un_Suspend_Client(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} has been activated`,
+              variant:'subtle',
+              position:'top-left',
+              description: `${name}'s account has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -84,12 +88,16 @@ function Un_Suspend_Account_Modal({
                       status: 'error',
                       isClosable: true,
                   })
+          }) .finally(()=>{
+            set_is_refresh(!is_refresh_data)
           })
         }else if (acc_type === 'distributor'){
           await Un_Suspend_Distributor(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} has been activated`,
+              variant:'subtle',
+              position:'top-left',
+              description: `${name}'s account has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -100,12 +108,16 @@ function Un_Suspend_Account_Modal({
                       status: 'error',
                       isClosable: true,
                   })
+          }) .finally(()=>{
+            set_is_refresh(!is_refresh_data)
           })
         }else if (acc_type === 'manufacturer'){
           await Un_Suspend_Manufacturer(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} has been activated`,
+              variant:'subtle',
+              position:'top-left',
+              description: `${name}'s account has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -116,12 +128,16 @@ function Un_Suspend_Account_Modal({
                       status: 'error',
                       isClosable: true,
                   })
+          }) .finally(()=>{
+            set_is_refresh(!is_refresh_data)
           })
         }else if (acc_type === 'salespersons')
           await Un_Suspend_Salesperson(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} has been activated`,
+              variant:'subtle',
+              position:'top-left',
+              description: `${name}'s account has been activated`,
               status: 'info',
               isClosable: true,
             });
@@ -132,6 +148,8 @@ function Un_Suspend_Account_Modal({
                       status: 'error',
                       isClosable: true,
                   })
+          }) .finally(()=>{
+            set_is_refresh(!is_refresh_data)
           })
       }else{
         toast({

@@ -3,8 +3,6 @@ import {Flex,Text,Button,Input,Select} from '@chakra-ui/react'
 import Header from '../components/Header.js'
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import FilterProductModal from '../components/modals/filterProduct.js';
-import OrderItemModal from '../components/modals/OrderItemModal.js';
 import {useRouter} from 'next/router';
 import Get_Orders from './api/orders/get_orders.js';
 import CloseIcon from '@mui/icons-material/Close';
@@ -51,8 +49,6 @@ export default function Orders(){
 
 	return(
 		<Flex direction='column'>
-			<FilterProductModal isfilterproductModalvisible={isfilterproductModalvisible} setisfilterproductModalvisible={setisfilterproductModalvisible}/>
-			<OrderItemModal isvieworderModalvisible={isvieworderModalvisible} setisvieworderModalvisible={setisvieworderModalvisible}/>
 			<Header/>
 			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Orders({orders_data?.length})</Text>
 			<Flex gap='2' p='2' align='center'>

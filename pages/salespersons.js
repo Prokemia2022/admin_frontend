@@ -1,18 +1,21 @@
 //modules imports
 import React,{useState,useEffect} from 'react'
-import {Flex,Text,Button,Input,Image,Select,Divider} from '@chakra-ui/react'
+import {Flex,Text,Button,Input,Image,Select,Divider,Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverBody,PopoverFooter,PopoverArrow,PopoverCloseButton,PopoverAnchor,} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 //components imports
 import Header from '../components/Header.js'
 //icons imports
 import SearchIcon from '@mui/icons-material/Search';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import TuneIcon from '@mui/icons-material/Tune';
-import Person2Icon from '@mui/icons-material/Person2';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
+
 import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
+import BusinessIcon from '@mui/icons-material/Business';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded';
 //api-calls imports
 import Get_SalesPeople from '../pages/api/salespeople/get_salespeople.js';
 import { RWebShare } from "react-web-share";
@@ -35,6 +38,7 @@ function SalesPersons(){
 		await Get_SalesPeople().then((response)=>{
 			set_is_fetching(true);
 			const data = response.data
+			//console.log(data)
 			const queried_data = (sorted_result_data)=>{
 				const result = sorted_result_data.filter((item) => item?.email_of_salesperson.toLowerCase().includes(search_query.toLowerCase()) ||
 					item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
@@ -179,29 +183,89 @@ const SalesPerson_Card_Item=({salesperson_data})=>{
 						<Text color='grey' fontSize='12px'>{salesperson_data?.email_of_salesperson}</Text>
 					</Flex>
 			</Flex>
-			<Flex gap='' mr='2'>
+			<Flex gap='1' mr='2' align={'center'}>
 				{salesperson_data?.suspension_status?
-					<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
+					<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red',cursor:'pointer'}}/>
 					:
 					null
 				}
-				{is_view_active?
-					<MoreVertIcon style={{fontSize:'20px',color:'#009393',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
+				{salesperson_data?.valid_email_status?
+					<MarkEmailReadIcon style={{fontSize:'16px',color:'#009393'}}/>
 					:
-					<MoreVertIcon style={{fontSize:'20px',color:'grey',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
+					null
 				}
+				{salesperson_data?.open_to_consultancy?
+					<FiberManualRecordRoundedIcon style={{fontSize:'16px',color:'#009393'}}/>
+					:
+					<FiberManualRecordRoundedIcon style={{fontSize:'16px',color:'grey'}}/>
+				}
+				<Popover placement='left-start'>
+					<PopoverTrigger>
+						<MoreVertIcon style={{fontSize:'20px',color:'grey',cursor:'pointer'}}/>
+					</PopoverTrigger>
+					<PopoverContent>
+						<PopoverArrow />
+						<PopoverCloseButton />
+						<PopoverHeader fontSize='14px'>
+							<Text fontWeight='bold'>
+								{salesperson_data?.first_name} {salesperson_data?.last_name}
+							</Text>
+						</PopoverHeader>
+						<PopoverBody>
+							<Flex direction='column' fontSize='10px' gap='1'>
+								<Flex align='center' gap='1' fontSize='11px' fontWeight='bold' color='grey'>
+									<PhoneAndroidIcon style={{fontSize:'18px'}}/>
+									<Text >
+										{salesperson_data?.mobile_of_salesperson? salesperson_data?.mobile_of_salesperson : '-'}
+									</Text>
+								</Flex>
+								<Flex align='center' gap='1'>
+									<BusinessIcon style={{fontSize:'20px'}}/>
+									<Text fontWeight='bold'>{salesperson_data?.company_name? salesperson_data?.company_name : '-'}</Text>
+								</Flex>
+								{salesperson_data?.valid_email_status?
+									<Flex align='center' gap='1' color='#009393'>
+										<MarkEmailReadIcon style={{fontSize:'20px'}}/>
+										<Text fontWeight='bold'>Verified Email</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<UnsubscribeIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Verified Email</Text>
+									</Flex>
+								}
+								{salesperson_data?.open_to_consultancy?
+									<Flex align='center' gap='1' color='#009393'>
+										<FiberManualRecordRoundedIcon style={{fontSize:'20px'}}/>
+										<Text fontWeight='bold'>Open to consult</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<FiberManualRecordRoundedIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Open to consult</Text>
+									</Flex>
+								}
+								{salesperson_data?.suspension_status?
+									<Flex align='center' gap='1'>
+										<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red'}}/>
+										<Text color='red' fontWeight='bold'>Suspended</Text>
+									</Flex>
+									:
+									<Flex align='center' gap='1' color='grey'>
+										<DisabledByDefaultRoundedIcon style={{fontSize:'20px'}}/>
+										<Text textDecoration='1px solid line-through' fontWeight='bold'>Suspended</Text>
+									</Flex>
+								}
+								<Divider/>
+								<Flex cursor='pointer' gap='2' align='center' onClick={(()=>{router.push(`/salesperson/${salesperson_data?._id}`)})}>
+									<VisibilityIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
+									<Text>Manage this salesperson</Text>
+								</Flex>
+							</Flex>
+						</PopoverBody>
+					</PopoverContent>
+				</Popover>
 			</Flex>
-			{is_view_active? 
-				<Flex direction='column' boxShadow='lg' cursor='pointer' w='120px' bg='#fff' borderRadius='5' position='absolute' bottom='-30px' right='20px' p='2' zIndex='100'>
-					<Flex align='center' onClick={(()=>{router.push(`/salesperson/${salesperson_data?._id}`)})}>
-						<Text>View</Text>
-						<ArrowRightAltIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
-					</Flex>
-					<Divider/>
-					{salesperson_data?.suspension_status? <Text fontSize='12px' fontWeight='bold' color='red'>suspended</Text>:null}
-				</Flex>
-				:
-			null}
 		</Flex>
 	)
 }

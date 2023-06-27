@@ -22,6 +22,7 @@ import {useRouter} from 'next/router';
 import Delete_Distributor from '../../pages/api/distributors/delete_Distributor_account';
 import Delete_Manufacturer from '../../pages/api/manufacturers/delete_manufacturer_account';
 import Delete_Salesperson from '../../pages/api/salespeople/delete_salesperson_account';
+import Delete_Client from '../../pages/api/clients/delete_client';
 import Cookies from 'universal-cookie';
 
 export default function Delete_Account_Modal({
@@ -76,11 +77,31 @@ export default function Delete_Account_Modal({
     const handle_deletion=async()=>{
       if (confirm_name === name){  
         if (acc_type === 'client'){
-          return ;
+          await Delete_Client(payload).then(()=>{
+            toast({
+              title: '',
+              variant:'subtle',
+              position:'top-left',
+              description: `${name} account has been deleted`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).then(()=>{
+            router.back();
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
+          });
         }else if (acc_type === 'distributor'){
           await Delete_Distributor(payload).then(()=>{
             toast({
               title: '',
+              variant:'subtle',
+              position:'top-left',
               description: `${name} account has been deleted`,
               status: 'info',
               isClosable: true,
@@ -100,6 +121,8 @@ export default function Delete_Account_Modal({
           await Delete_Manufacturer(payload).then(()=>{
             toast({
               title: '',
+              variant:'subtle',
+              position:'top-left',
               description: `${name} account has been deleted`,
               status: 'info',
               isClosable: true,
@@ -119,6 +142,8 @@ export default function Delete_Account_Modal({
           await Delete_Salesperson(payload).then(()=>{
             toast({
               title: '',
+              variant:'subtle',
+              position:'top-left',
               description: `${name} account has been deleted`,
               status: 'info',
               isClosable: true,

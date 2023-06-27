@@ -186,7 +186,7 @@ function Edit_Technology_Modal({
                                     <Text>Technology title</Text>
                                     <Input type='text' placeholder={edited_title} variant='filled' onChange={((e)=>{set_edited_title(e.target.value)})}/>
                                     <Text>Description</Text>
-                                    <Input type='text' placeholder={edited_description} variant='filled' onChange={((e)=>{set_edited_description(e.target.value)})}/>
+                                    <Textarea type='text' placeholder={edited_description} variant='filled' onChange={((e)=>{set_edited_description(e.target.value)})}/>
                                     <Flex direction='column'>
                                       <Text>Select a image to edit cover photo</Text>
                                         {is_change_image || item?.cover_image == ''?
