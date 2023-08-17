@@ -138,7 +138,7 @@ const Body=()=>{
                         <BreadcrumbLink>careers</BreadcrumbLink>
                     </BreadcrumbItem>
                 </Breadcrumb>
-                <Button colorScheme="teal" leftIcon={<AddIcon />} onClick={Add_careers_integrations.onOpen}>Career</Button>
+                <Button colorScheme="teal" leftIcon={<AddIcon />} onClick={Add_careers_integrations?.onOpen}>Career</Button>
                 <New_Career_Form Add_careers_integrations={Add_careers_integrations} auth_role={auth_role} set_is_refresh_data={set_is_refresh_data}/>
             </HStack>
             <Box gap='2' bg='#fff' borderRadius={5} p='4' mt='2'>
@@ -259,22 +259,22 @@ const Career_Card=({item,auth_role,set_is_refresh_data})=>{
                         <MoreVertIcon/>
                     </MenuButton>
                     <MenuList p='2'>
-                        <MenuItem onClick={View_career_integrations.onOpen}>
+                        <MenuItem onClick={View_career_integrations?.onOpen}>
                             View
                         </MenuItem>
-                        <MenuItem onClick={Edit_career_integrations.onOpen}>
+                        <MenuItem onClick={Edit_career_integrations?.onOpen}>
                             Edit
                         </MenuItem>
-                        <MenuItem mt='2' onClick={Delete_career_integrations.onOpen} bg='red.200' borderRadius='md'>
+                        <MenuItem mt='2' onClick={Delete_career_integrations?.onOpen} bg='red.200' borderRadius='md'>
                             Delete
                         </MenuItem>
                     </MenuList>
                 </Menu>
             </Td>
             <AlertDialog
-                isOpen={Delete_career_integrations.isOpen}
+                isOpen={Delete_career_integrations?.isOpen}
                 leastDestructiveRef={cancelRef}
-                onClose={Delete_career_integrations.onClose}
+                onClose={Delete_career_integrations?.onClose}
             >
                 <AlertDialogOverlay>
                 <AlertDialogContent>
@@ -287,7 +287,7 @@ const Career_Card=({item,auth_role,set_is_refresh_data})=>{
                     </AlertDialogBody>
 
                     <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={Delete_career_integrations.onClose}>
+                    <Button ref={cancelRef} onClick={Delete_career_integrations?.onClose}>
                         Cancel
                     </Button>
                     <Button colorScheme='red' onClick={handle_delete_career} ml={3}>

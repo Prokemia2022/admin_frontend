@@ -174,7 +174,7 @@ const Body=()=>{
                         <BreadcrumbLink>industries</BreadcrumbLink>
                     </BreadcrumbItem>
                 </Breadcrumb>
-                <Button colorScheme="teal" leftIcon={<AddIcon />} onClick={Add_industry_integrations.onOpen}>Industry</Button>
+                <Button colorScheme="teal" leftIcon={<AddIcon />} onClick={Add_industry_integrations?.onOpen}>Industry</Button>
                 <New_Industry_Form Add_industry_integrations={Add_industry_integrations} auth_role={auth_role} set_is_refresh_data={set_is_refresh_data}/>
             </HStack>
             <Box gap='2' bg='#fff' borderRadius={5} p='4' mt='2'>
@@ -281,7 +281,7 @@ const Industry_Card=({item,auth_role,set_is_refresh_data})=>{
               position:'top-left',
               isClosable: true,
             });
-            Delete_industry_integrations.onClose()
+            Delete_industry_integrations?.onClose()
             set_is_refresh_data('deleted an inustry')
           }).then(()=>{
               cookies.remove('ind_image_url', { path: '/' });
@@ -320,22 +320,22 @@ const Industry_Card=({item,auth_role,set_is_refresh_data})=>{
                     </MenuButton>
                     <MenuList p='2'>
                         <Text color='#009393' my='2' fontWeight='bold'>{item?.title}</Text>
-                        <MenuItem onClick={View_industry_integrations.onOpen}>
+                        <MenuItem onClick={View_industry_integrations?.onOpen}>
                             View
                         </MenuItem>
-                        <MenuItem onClick={Edit_industry_integrations.onOpen}>
+                        <MenuItem onClick={Edit_industry_integrations?.onOpen}>
                             Edit
                         </MenuItem>
-                        <MenuItem mt='2' onClick={Delete_industry_integrations.onOpen} bg='red.200' borderRadius='md'>
+                        <MenuItem mt='2' onClick={Delete_industry_integrations?.onOpen} bg='red.200' borderRadius='md'>
                             Delete
                         </MenuItem>
                     </MenuList>
                 </Menu>
             </Td>
             <AlertDialog
-                isOpen={Delete_industry_integrations.isOpen}
+                isOpen={Delete_industry_integrations?.isOpen}
                 leastDestructiveRef={cancelRef}
-                onClose={Delete_industry_integrations.onClose}
+                onClose={Delete_industry_integrations?.onClose}
             >
                 <AlertDialogOverlay>
                 <AlertDialogContent>
@@ -348,7 +348,7 @@ const Industry_Card=({item,auth_role,set_is_refresh_data})=>{
                     </AlertDialogBody>
 
                     <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={Delete_industry_integrations.onClose}>
+                    <Button ref={cancelRef} onClick={Delete_industry_integrations?.onClose}>
                         Cancel
                     </Button>
                     <Button colorScheme='red' onClick={handle_delete_industry} ml={3}>

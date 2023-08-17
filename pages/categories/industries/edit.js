@@ -121,7 +121,7 @@ function Edit_Industry_Form({Edit_industry_integrations,auth_role,item,set_is_re
                             isClosable: true,
                           });
                       })
-                      Edit_industry_integrations.onClose()
+                      Edit_industry_integrations?.onClose()
                       set_is_refresh_data(true)
                       return ;
                   }else{
@@ -135,7 +135,7 @@ function Edit_Industry_Form({Edit_industry_integrations,auth_role,item,set_is_re
               //if the image status has not changed then proceed to edit the technology
               await Edit_Industry(payload).then(()=>{
                   set_is_submitting(false)
-                  Edit_industry_integrations.onClose()
+                  Edit_industry_integrations?.onClose()
                   set_is_refresh_data(true)
                   return toast({
                     title: '',
@@ -153,15 +153,15 @@ function Edit_Industry_Form({Edit_industry_integrations,auth_role,item,set_is_re
               })
               return ;
           }
-          Edit_industry_integrations.onClose()
+          Edit_industry_integrations?.onClose()
       }
     //input error handlers
     const [input_error,set_input_error]=useState(false);
 	return(
         <Drawer
-            isOpen={Edit_industry_integrations.isOpen}
+            isOpen={Edit_industry_integrations?.isOpen}
             placement='right'
-            onClose={Edit_industry_integrations.onClose}
+            onClose={Edit_industry_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -219,7 +219,7 @@ function Edit_Industry_Form({Edit_industry_integrations,auth_role,item,set_is_re
                 </FormControl>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={Edit_industry_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={Edit_industry_integrations?.onClose}>
                 Cancel
                 </Button>
                 {is_retry?

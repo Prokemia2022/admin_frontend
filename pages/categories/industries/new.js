@@ -139,7 +139,7 @@ function New_Industry_Form({Add_industry_integrations,auth_role,set_is_refresh_d
           set_is_retry(false)
           set_is_submitting(false);
           set_image_uploaded(false);
-          Add_industry_integrations.onClose()
+          Add_industry_integrations?.onClose()
         }
       }
     const ClearInputs=()=>{
@@ -153,9 +153,9 @@ function New_Industry_Form({Add_industry_integrations,auth_role,set_is_refresh_d
     const [input_error,set_input_error]=useState(false);
 	return(
         <Drawer
-            isOpen={Add_industry_integrations.isOpen}
+            isOpen={Add_industry_integrations?.isOpen}
             placement='right'
-            onClose={Add_industry_integrations.onClose}
+            onClose={Add_industry_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -212,7 +212,7 @@ function New_Industry_Form({Add_industry_integrations,auth_role,set_is_refresh_d
                 </FormControl>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={Add_industry_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={Add_industry_integrations?.onClose}>
                 Cancel
                 </Button>
                 {is_retry?

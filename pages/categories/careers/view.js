@@ -24,9 +24,9 @@ import LanguageIcon from '@mui/icons-material/Language';
 function View_Career({View_career_integrations,item}){
 	return(
         <Drawer
-            isOpen={View_career_integrations.isOpen}
+            isOpen={View_career_integrations?.isOpen}
             placement='right'
-            onClose={View_career_integrations.onClose}
+            onClose={View_career_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -87,7 +87,7 @@ function View_Career({View_career_integrations,item}){
                 </Box>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={View_career_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={View_career_integrations?.onClose}>
                     Back
                 </Button>
             </DrawerFooter>

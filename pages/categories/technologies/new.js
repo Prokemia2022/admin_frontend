@@ -144,7 +144,7 @@ function New_Technology_Form({Add_technology_integrations,auth_role,set_is_refre
           set_is_retry(false)
           set_is_submitting(false);
           set_image_uploaded(false);
-          Add_technology_integrations.onClose()
+          Add_technology_integrations?.onClose()
         }
       }
     const ClearInputs=()=>{
@@ -158,9 +158,9 @@ function New_Technology_Form({Add_technology_integrations,auth_role,set_is_refre
     const [input_error,set_input_error]=useState(false);
 	return(
         <Drawer
-            isOpen={Add_technology_integrations.isOpen}
+            isOpen={Add_technology_integrations?.isOpen}
             placement='right'
-            onClose={Add_technology_integrations.onClose}
+            onClose={Add_technology_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -217,7 +217,7 @@ function New_Technology_Form({Add_technology_integrations,auth_role,set_is_refre
                 </FormControl>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={Add_technology_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={Add_technology_integrations?.onClose}>
                 Cancel
                 </Button>
                 {is_retry?

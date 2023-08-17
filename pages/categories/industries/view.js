@@ -22,9 +22,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 function View_Industry({View_industry_integrations,item}){
 	return(
         <Drawer
-            isOpen={View_industry_integrations.isOpen}
+            isOpen={View_industry_integrations?.isOpen}
             placement='right'
-            onClose={View_industry_integrations.onClose}
+            onClose={View_industry_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -64,7 +64,7 @@ function View_Industry({View_industry_integrations,item}){
                 </Box>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={View_industry_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={View_industry_integrations?.onClose}>
                     Back
                 </Button>
             </DrawerFooter>

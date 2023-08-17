@@ -160,7 +160,7 @@ const Body=()=>{
                         <BreadcrumbLink>technologies</BreadcrumbLink>
                     </BreadcrumbItem>
                 </Breadcrumb>
-                <Button colorScheme="teal" leftIcon={<AddIcon />} onClick={Add_technology_integrations.onOpen}>Technology</Button>
+                <Button colorScheme="teal" leftIcon={<AddIcon />} onClick={Add_technology_integrations?.onOpen}>Technology</Button>
                 <New_Technology_Form Add_technology_integrations={Add_technology_integrations} auth_role={auth_role} set_is_refresh_data={set_is_refresh_data}/>
             </HStack>
             <Box gap='2' bg='#fff' borderRadius={5} p='4' mt='2'>
@@ -267,7 +267,7 @@ const Technology_Card=({item,auth_role,set_is_refresh_data})=>{
               position:'top-left',
               isClosable: true,
             });
-            Delete_technology_integrations.onClose()
+            Delete_technology_integrations?.onClose()
             set_is_refresh_data('deleted an inustry')
           }).then(()=>{
               cookies.remove('technology_image_url', { path: '/' });
@@ -306,22 +306,22 @@ const Technology_Card=({item,auth_role,set_is_refresh_data})=>{
                     </MenuButton>
                     <MenuList p='2'>
                         <Text color='#009393' my='2' fontWeight='bold'>{item?.title}</Text>
-                        <MenuItem onClick={View_technology_integrations.onOpen}>
+                        <MenuItem onClick={View_technology_integrations?.onOpen}>
                             View
                         </MenuItem>
-                        <MenuItem onClick={Edit_technology_integrations.onOpen}>
+                        <MenuItem onClick={Edit_technology_integrations?.onOpen}>
                             Edit
                         </MenuItem>
-                        <MenuItem mt='2' onClick={Delete_technology_integrations.onOpen} bg='red.200' borderRadius='md'>
+                        <MenuItem mt='2' onClick={Delete_technology_integrations?.onOpen} bg='red.200' borderRadius='md'>
                             Delete
                         </MenuItem>
                     </MenuList>
                 </Menu>
             </Td>
             <AlertDialog
-                isOpen={Delete_technology_integrations.isOpen}
+                isOpen={Delete_technology_integrations?.isOpen}
                 leastDestructiveRef={cancelRef}
-                onClose={Delete_technology_integrations.onClose}
+                onClose={Delete_technology_integrations?.onClose}
             >
                 <AlertDialogOverlay>
                 <AlertDialogContent>
@@ -334,7 +334,7 @@ const Technology_Card=({item,auth_role,set_is_refresh_data})=>{
                     </AlertDialogBody>
 
                     <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={Delete_technology_integrations.onClose}>
+                    <Button ref={cancelRef} onClick={Delete_technology_integrations?.onClose}>
                         Cancel
                     </Button>
                     <Button colorScheme='red' onClick={handle_delete_technology} ml={3}>

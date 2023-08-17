@@ -57,7 +57,7 @@ function New_Career_Form({Add_careers_integrations,auth_role,set_is_refresh_data
             
           if (response.status === 200){
             set_is_refresh_data('new career added')
-            Add_careers_integrations.onClose()
+            Add_careers_integrations?.onClose()
             return toast({
                       title: '',
                       description: 'Successfully edited this vacancy',
@@ -80,9 +80,9 @@ function New_Career_Form({Add_careers_integrations,auth_role,set_is_refresh_data
     const [input_error,set_input_error]=useState(false);
 	return(
         <Drawer
-            isOpen={Add_careers_integrations.isOpen}
+            isOpen={Add_careers_integrations?.isOpen}
             placement='right'
-            onClose={Add_careers_integrations.onClose}
+            onClose={Add_careers_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -153,7 +153,7 @@ function New_Career_Form({Add_careers_integrations,auth_role,set_is_refresh_data
                 </FormControl>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={Add_careers_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={Add_careers_integrations?.onClose}>
                     Cancel
                 </Button>
                 <Button colorScheme='teal' onClick={Handle_edit_vacancy}>Save</Button>

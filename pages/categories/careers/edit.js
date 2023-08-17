@@ -67,7 +67,7 @@ function Edit_Career_Form({Edit_career_integrations,auth_role,item,set_is_refres
             });
         }
         await Edit_Vacancy(payload).then((response)=>{
-            Edit_career_integrations.onClose()
+            Edit_career_integrations?.onClose()
           if (response.status === 200){
             return toast({
                       title: '',
@@ -91,9 +91,9 @@ function Edit_Career_Form({Edit_career_integrations,auth_role,item,set_is_refres
     const [input_error,set_input_error]=useState(false);
 	return(
         <Drawer
-            isOpen={Edit_career_integrations.isOpen}
+            isOpen={Edit_career_integrations?.isOpen}
             placement='right'
-            onClose={Edit_career_integrations.onClose}
+            onClose={Edit_career_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -164,7 +164,7 @@ function Edit_Career_Form({Edit_career_integrations,auth_role,item,set_is_refres
                 </FormControl>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={Edit_career_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={Edit_career_integrations?.onClose}>
                     Cancel
                 </Button>
                 <Button colorScheme='teal' onClick={Handle_edit_vacancy}>Save</Button>

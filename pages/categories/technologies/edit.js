@@ -130,7 +130,7 @@ function Edit_Technology_Form({Edit_technology_integrations,auth_role,item,set_i
                             position:'top-left'
                           });
                       })
-                      Edit_technology_integrations.onClose()
+                      Edit_technology_integrations?.onClose()
                       set_is_refresh_data(true)
                       return ;
                   }else{
@@ -145,7 +145,7 @@ function Edit_Technology_Form({Edit_technology_integrations,auth_role,item,set_i
               await Edit_Technology(payload).then(()=>{
                 console.log(payload)
                   set_is_submitting(false)
-                  Edit_technology_integrations.onClose()
+                  Edit_technology_integrations?.onClose()
                   set_is_refresh_data(true)
                   return toast({
                     title: '',
@@ -167,15 +167,15 @@ function Edit_Technology_Form({Edit_technology_integrations,auth_role,item,set_i
               })
               return ;
           }
-          Edit_technology_integrations.onClose()
+          Edit_technology_integrations?.onClose()
       }
     //input error handlers
     const [input_error,set_input_error]=useState(false);
 	return(
         <Drawer
-            isOpen={Edit_technology_integrations.isOpen}
+            isOpen={Edit_technology_integrations?.isOpen}
             placement='right'
-            onClose={Edit_technology_integrations.onClose}
+            onClose={Edit_technology_integrations?.onClose}
             size={{
                 base:'full',
                 md:'md'
@@ -233,7 +233,7 @@ function Edit_Technology_Form({Edit_technology_integrations,auth_role,item,set_i
                 </FormControl>
             </DrawerBody>
             <DrawerFooter>
-                <Button variant='outline' mr={3} onClick={Edit_technology_integrations.onClose}>
+                <Button variant='outline' mr={3} onClick={Edit_technology_integrations?.onClose}>
                 Cancel
                 </Button>
                 {is_retry?
