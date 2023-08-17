@@ -9,7 +9,17 @@ import styles from '../../styles/Permissions&Accounts.module.css';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import InfoIcon from '@mui/icons-material/Info';
 
+import Navigation from '../../components/Navigation';
+
 export default function Add_New_Role(){
+    return(
+        <Navigation >
+            <Body/>
+        </Navigation>
+    )
+}
+
+function Body(){
 
     const [is_role_description_active,set_is_role_description_active]=useState(false);
     const [is_scope_description_active,set_is_scope_description_active]=useState(false);
@@ -266,6 +276,21 @@ export default function Add_New_Role(){
             let decoded = jwt_decode(token);
             //console.log(decoded);
             set_auth_role(decoded?.role);
+            if(decoded?.role === 'Manager' || decoded?.role === 'Tech Support'){
+                return ;
+            }else{
+                router.push('/dashboard_new')
+                setTimeout(()=>{
+                    toast({
+                        title: '',
+                        description: `You do not have access to this page`,
+                        status: 'info',
+                        isClosable: true,
+                        variant:'left-accent',
+                        position:'top-left'
+                    });
+                },5000)
+            }
           }
     },[])
 

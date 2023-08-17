@@ -39,7 +39,7 @@ export default function AuthHandler(){
 			setwindow(true)
 		}
 		if(token){
-			router.push('/dashboard');
+			router.push('/dashboard_new');
 			return ;
 		}
 	},[token]) 
@@ -78,7 +78,7 @@ export default function AuthHandler(){
 						});
 					setTimeout(()=>{
 					},6000)
-					router.push("/dashboard");
+					router.push("/dashboard_new");
 					return ;
 				}
 				else{
