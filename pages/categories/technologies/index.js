@@ -112,7 +112,7 @@ const Body=()=>{
     const Get_Data=async()=>{
 		set_is_fetching(true);
 		await Get_Technologies().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			let fetched_data = response.data;
 
             const stats_data = (data)=>{
@@ -272,7 +272,7 @@ const Technology_Card=({item,auth_role,set_is_refresh_data})=>{
           }).then(()=>{
               cookies.remove('technology_image_url', { path: '/' });
           }).catch((err)=>{
-            console.log(err)
+            //console.log(err)
             toast({
                       title: 'error while deleting this technology',
                       description: err.response?.data,

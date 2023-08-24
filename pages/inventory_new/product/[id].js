@@ -105,17 +105,27 @@ const Body=()=>{
 		auth_role
 	}
 
+    const [created_by_name,set_created_by_name]=useState('');
+
 	const get_Data=async(payload)=>{
 		await Get_Product(payload).then((response)=>{
 			set_product_data(response.data)
-			console.log(response.data)
+			//console.log(response.data)
+            if (response.data?.manufactured_by_id === response.data?.listed_by_id){
+                set_created_by_name(response.data?.manufactured_by)
+            }else if(response.data?.distributed_by_id === response.data?.listed_by_id){
+                set_created_by_name(response.data?.distributed_by)
+            }else{
+                set_created_by_name(response.data?.listed_by_id)
+            }
 		})
 	}
 	useEffect(()=>{
 		if (payload._id || id.id ){
-			get_Data(payload)
+			get_Data(payload);
 		}
 	},[id,is_submitting,refresh_data]);
+
 	useEffect(()=>{
 		if (token){
 			let decoded = jwt_decode(token);
@@ -224,6 +234,8 @@ const Body=()=>{
 			setTimeout(()=>{set_is_submitting(false)},1000)
 		})
 	}
+
+    
     return (
         <Box gap='2' m={{
             base:'0',
@@ -433,12 +445,12 @@ const Body=()=>{
                                 <Text fontWeight={'bold'}>Website</Text>
                                 <HStack color='teal' my='2' fontSize='sm'>
                                     <LanguageIcon mx='2px' />
-                                    <a href={`${product_data?.website_link_to_Seller}`} target="_blank" rel="noopener noreferrer">{product_data?.website_link_to_Seller}</a>
+                                    <a href={`${product_data?.website_link_to_Seller}`} target="_blank" rel="noopener noreferrer" style={{width:'50px'}}>{product_data?.website_link_to_Seller}</a>
                                 </HStack>
                             </Box>
                             <Box mb='2'>
                                 <Text fontWeight={'semibold'}>Created by:</Text>
-                                <Text color='grey'>{product_data?.listed_by_id}</Text>
+                                <Text color='grey'>{created_by_name}</Text>
                             </Box>
                             <HStack mb='2'>
                                 <Text fontWeight={'semibold'}>Viewed :</Text>

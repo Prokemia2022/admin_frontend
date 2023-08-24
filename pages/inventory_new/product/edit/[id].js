@@ -192,7 +192,7 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
         storage_of_product,
         industry,
         technology,
-        website_link,
+        website_link_to_Seller : website_link,
         auth_role
     }
 

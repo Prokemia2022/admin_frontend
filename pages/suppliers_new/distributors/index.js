@@ -51,10 +51,12 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+
 //apis
 import Get_Distributors from '../../api/distributors/get_distributors.js';
 
 import styles from '../../../styles/Inventory.module.css'
+import moment from "moment";
 
 export default function DistributorsPage(){
     return(
@@ -78,6 +80,9 @@ const Body=()=>{
     const [subscription_status,set_subscription_status] = useState('');
 	const [search_query,set_search_query] = useState('');
 	const [sort,set_sort]=useState('descending');
+
+    const [fromDate,set_fromDate]=useState('');
+	const [toDate,set_toDate]=useState(moment(new Date()).format("YYYY-MM-DD"));
 
 	const [is_fetching,set_is_fetching]=useState(null);
 
@@ -120,13 +125,13 @@ const Body=()=>{
 					case 'ascending':
 						return result.sort((a, b) => b.company_name.localeCompare(a.company_name))
 					case 'subscribed':
-						return result?.filter((item) => !item.subscription)
+						return result?.filter((item) => item.subscription)
                     case 'pending approval':
 						return result?.filter((item) => !item.verification_status)
                     case 'active':
                             return result?.filter((item) => !item.suspension_status)
 					case 'not subscribed':
-						return result?.filter((item) => item.subscription)
+						return result?.filter((item) => !item.subscription)
                     case 'suspended':
 						return result?.filter((item) => item.suspension_status)
                     case 'not suspended':
@@ -146,8 +151,18 @@ const Body=()=>{
 			}
             let sorted_result = sorted_data(data);
             let queried_result = search_queried_data(sorted_result);
+            if (fromDate !== '' && toDate !== ''){
+				//console.log(fromDate,toDate)
+				let filtered_by_date = queried_result?.filter((item)=>{
+					return new Date(item?.createdAt).getTime() >= new Date(fromDate).getTime() && new Date(item?.createdAt).getTime() <= new Date(toDate).getTime()
+				});
+				//console.log(filtered_by_date)
+				set_distributors_data(filtered_by_date)
+			}else{
+				set_distributors_data(queried_result)
+			}
             //console.log(queried_result);
-            set_distributors_data(queried_result)
+            //set_distributors_data(queried_result)
 			// if (suspension_status === 'suspended'){
 			// 	let result = data?.filter((item) => item.suspension_status)
 			// 	let sorted_result = sorted_data(result);
@@ -167,7 +182,7 @@ const Body=()=>{
 			// 	set_distributors_data(queried_result)
 			// }
 		}).catch((err)=>{
-			console.log(err)
+			//console.log(err)
 			set_distributors_data([])
 		}).finally(()=>{
 			set_is_fetching(null);
@@ -187,7 +202,13 @@ const Body=()=>{
                 handle_get_distributors();
             }
         })();
-	},[suspension_status,subscription_status,search_query,sort])
+	},[suspension_status,subscription_status,debounce_search_value,search_query,sort,fromDate,toDate])
+
+    const Clear_Filter=()=>{
+        set_search_query('')
+        set_fromDate('');
+		set_toDate(moment(new Date()).format("YYYY-MM-DD"))
+    }
     return (
         <Box gap='2'>
             <HStack justifyContent={'space-between'}>
@@ -241,8 +262,16 @@ const Body=()=>{
                         borderRadius="1px"
                     />
                 </Tabs>
-                <SimpleGrid minChildWidth='250px' spacing='20px' mt='4'>
-                    <InputGroup alignItems={'center'}>
+                <SimpleGrid minChildWidth='250px' spacing='20px' mt='4' bg='#fff' p='2' borderRadius='lg' alignItems='end'>
+                    <Box>
+                        <Text>From date</Text>
+                        <Input value={fromDate} placeholder="Select Date and Time" size="md" type="datetime-local"  onChange={((e)=>{set_fromDate(e.target.value)})}/>
+                    </Box>
+                    <Box>
+                        <Text>To date</Text>
+                        <Input value={toDate} placeholder="Select Date and Time" size="md" type="datetime-local" onChange={((e)=>{set_toDate(e.target.value)})}/>
+                    </Box>
+                    <InputGroup flex='1'>
                         <InputLeftElement pointerEvents='none' color='gray' alignItems={'center'}>
                             <SearchIcon style={{marginTop:'8px'}} />
                         </InputLeftElement>
@@ -256,6 +285,36 @@ const Body=()=>{
                         }
                     </InputGroup>
                 </SimpleGrid>
+                <Flex gap='2'>
+                    {fromDate !== ''? 
+                        <Flex mt='2' gap='1' border={'1px'} borderStyle={'dashed'} borderColor={'gray.200'} borderRadius={5} p='2'>
+                            <Text fontWeight={'semibold'} fontSize={'sm'}>
+                                from:
+                            </Text>
+                            <Tag
+                                size={'md'}
+                                borderRadius='md'
+                                variant='subtle'
+                                bg='black'
+                                color={'#fff'}
+                                onClick={(()=>{set_fromDate('')})}
+                            >
+                                <TagLabel>{fromDate}</TagLabel>
+                                <TagCloseButton />
+                            </Tag>
+                        </Flex>
+                        : 
+                        null
+                    }
+                    {fromDate !== ''?
+                        <Tag my='1' onClick={Clear_Filter} size='lg' gap='1' _hover={{bg:'red.100'}} bg='gray:200' color='red' borderRadius='md' cursor={'pointer'}>
+                            <DeleteSweepIcon/>
+                            <TagLabel>clear</TagLabel>
+                        </Tag>
+                        :
+                        null
+                    }
+                </Flex>
                 <TableContainer bg='#fff' mt='4' borderRadius={5}>
                     <Table variant='simple'>
                         <Thead bg='#eee' borderRadius={'5'}>
@@ -288,6 +347,7 @@ const Body=()=>{
                                         }
                                     </Flex>
                                 </Th>
+                                <Th>Joined</Th>
                                 <Th>Actions</Th>
                             </Tr>
                         </Thead>
@@ -332,8 +392,8 @@ const Body=()=>{
                                             }
                                         </Td>
                                         <Td>
-                                            {!item?.subscription?
-                                                <Badge variant='subtle' bg={'green.100'} borderRadius={'md'}>
+                                            {item?.subscription?
+                                                <Badge variant='subtle' bg={'blue.100'} borderRadius={'md'}>
                                                     subscribed
                                                 </Badge>
                                                 :
@@ -353,6 +413,7 @@ const Body=()=>{
                                                 </Badge>
                                             }
                                         </Td>
+                                        <Td>{moment( item?.createdAt).format("MMM Do YY")}</Td>
                                         <Td>
                                         <Menu >
                                             <MenuButton >

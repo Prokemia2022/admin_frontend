@@ -102,7 +102,7 @@ const Body=()=>{
     const Get_Data=async()=>{
 		set_is_fetching(true);
 		await Get_Vacancies().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			let fetched_data = response.data;
 
 			const filtered_data = fetched_data.filter((item)=> item.title?.toLowerCase().includes(search_query.toLowerCase()) || item.company?.toLowerCase().includes(search_query.toLowerCase()));
@@ -232,7 +232,7 @@ const Career_Card=({item,auth_role,set_is_refresh_data})=>{
             Delete_career_integrations.onClose()
             set_is_refresh_data('deleted a career')
           }).catch((err)=>{
-            console.log(err)
+            //console.log(err)
             toast({
                       title: 'error while deleting this career',
                       description: err.response?.data,

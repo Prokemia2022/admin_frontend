@@ -519,6 +519,9 @@ const SidebarContent = (props) => {
             <NavItem pl="12" py="2" onClick={(()=>{router.push(`/categories/careers`)})} bg={router?.asPath == '/categories/careers'? 'teal.100' : ''} borderRadius={router?.asPath == '/categories/careers'? 'md' : ''}>
               Careers
             </NavItem>
+            <NavItem pl="12" py="2" onClick={(()=>{router.push(`/categories/applications`)})} bg={router?.asPath == '/categories/applications'? 'teal.100' : ''} borderRadius={router?.asPath == '/categories/applications'? 'md' : ''}>
+              Applications
+            </NavItem>
             <NavItem pl="12" py="2" onClick={(()=>{router.push(`/categories/support/tickets`)})} bg={router?.asPath == '/categories/support/tickets'? 'teal.100' : ''} borderRadius={router?.asPath == '/categories/support/tickets'? 'md' : ''}>
               Support tickets
             </NavItem>
