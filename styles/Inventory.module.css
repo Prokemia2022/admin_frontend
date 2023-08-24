@@ -13,6 +13,7 @@
 }
 .products_container::-webkit-scrollbar{
     width: 2px;
+    height: 1px;
 }
 .products_container::-webkit-scrollbar-thumb{
     background: #009393;

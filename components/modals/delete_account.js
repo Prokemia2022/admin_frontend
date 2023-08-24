@@ -148,6 +148,7 @@ export default function Delete_Account_Modal({
               status: 'info',
               isClosable: true,
             });
+            router.back();
           }).catch((err)=>{
             toast({
                       title: '',

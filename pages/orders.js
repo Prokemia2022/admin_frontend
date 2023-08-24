@@ -14,7 +14,7 @@ export default function Orders(){
 	const [isfilterproductModalvisible,setisfilterproductModalvisible]=useState(false);
 	const [isvieworderModalvisible,setisvieworderModalvisible]=useState(false);
 	
-	const [orders_data,set_orders]=useState([]);
+	const [orders_data,set_orders]=useState([]); 
 	const [sort_value,set_sort_value]=useState('desc')
 	const [search_query,set_search_query] = useState('');
 	const [status_query,set_status_query] = useState('');
