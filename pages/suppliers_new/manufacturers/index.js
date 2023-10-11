@@ -143,6 +143,7 @@ const Body=()=>{
 			const search_queried_data =(sorted_result)=>{
 				return sorted_result.filter((item) => item?.email_of_company?.toLowerCase().includes(debounce_search_value?.toLowerCase()) ||
 					item?.company_name?.toLowerCase().includes(debounce_search_value?.toLowerCase()) || 
+                    item?._id?.toLowerCase().includes(debounce_search_value?.toLowerCase()) || 
 					item?.first_name?.toLowerCase().includes(debounce_search_value?.toLowerCase()) ||
 					item?.industry?.toLowerCase().includes(industry.toLowerCase()) ||
 					item?.technology?.toLowerCase().includes(technology.toLowerCase()) ||

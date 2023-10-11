@@ -150,7 +150,7 @@ const Body=()=>{
 	const get_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
             const email = response?.data?.email_of_company
-			get_products_data(email);
+			get_products_data(email,id);
 			return set_client_data(response?.data)
 		})
 	}
@@ -285,11 +285,11 @@ const Body=()=>{
         })
 	}
 
-    const get_products_data=async(email)=>{
+    const get_products_data=async(email,listed_by_id)=>{
 		await Get_Products().then((response)=>{
 			const data = response?.data
 			//console.log(data)
-			const result = data?.filter((item)=> item?.email_of_lister.toLowerCase().includes(email.toLowerCase()))
+			const result = data?.filter((item)=> item?.listed_by_id.toLowerCase().includes(listed_by_id.toLowerCase()))
 			set_products(result)
 
 			const industry_values = result.map(item=>item?.industry)
@@ -548,7 +548,7 @@ const Body=()=>{
                         <Tabs>
                             <TabList>
                                 <Tab>Details</Tab>
-                                <Tab>Products</Tab>
+                                <Tab>Products [{products?.length}]</Tab>
                             </TabList>
 
                             <TabPanels>
@@ -577,9 +577,9 @@ const Body=()=>{
                                         <Wrap>
                                             {industries?.map((item,index)=>{
                                                 return(
-                                                    <HStack>
+                                                    <HStack key={index}>
                                                         <FiberManualRecordIcon style={{fontSize:'10'}}/>
-                                                        <Text fontSize='sm' key={index}>{item}</Text>
+                                                        <Text fontSize='sm'>{item}</Text>
                                                     </HStack>
                                                 )
                                             })}
@@ -683,6 +683,7 @@ const Body=()=>{
                                                     p='4'
                                                     my='2'
                                                     justify='space-between'
+                                                    key={item?._id}
                                                 >
                                                     <Box>
                                                         <Text 

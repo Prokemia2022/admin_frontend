@@ -97,7 +97,7 @@ const [auth_role,set_auth_role]=useState("");
 const get_Product_Data=async()=>{
     await Get_Product(product_payload).then((response)=>{
         set_product_data(response.data)
-        console.log(response.data)
+        //console.log(response.data)
     })
 }
 const get_Industries_Data=async()=>{
@@ -142,6 +142,8 @@ const [distributors_data,set_distributors_data]=useState([]);
 const [manufacturers_data,set_manufacturers_data]=useState([]);
 const [product_data,set_product_data]=useState('');
 
+const [joined_suppliers_data,set_joined_suppliers_data]=useState([]);
+
 
 //states
 const [is_submitting,set_is_submitting]=useState(false);
@@ -158,6 +160,8 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
     //seller information
     const [distributed_by,set_distributed_by]=useState(product_data?.distributed_by);
     const [distributed_by_id,set_distributed_by_id]=useState(product_data?.distributed_by_id);
+    //lister
+    const [listed_by_id,set_listed_by_id]=useState(product_data?.listed_by_id);
     //product information
     const [description_of_product,set_description_of_product]=useState(product_data?.description_of_product);
     const [chemical_name,set_chemical_name]=useState(product_data?.chemical_name);
@@ -182,6 +186,7 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
         distributed_by,
         manufactured_by_id,
         distributed_by_id,
+        listed_by_id,
         description_of_product,
         chemical_name,
         function : product_function,
@@ -230,7 +235,7 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
             }
         }
         set_is_submitting(true);
-        console.log(payload);
+        //console.log(payload);
         const response = await Edit_Product(payload).then((res)=>{
             /**
                 sends a payload data to server to edit product.
@@ -255,7 +260,7 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
                     status: 200
                 }
                 router.back()
-                console.log(response)
+                //console.log(response)
                 return response;
             }).catch((err)=>{
                 //console.log(err)
@@ -274,7 +279,7 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
             }).finally(()=>{
                 set_is_submitting(false);
             })
-        console.log(response)
+        //console.log(response)
         return response;
     }
     //useEffects
@@ -286,6 +291,7 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
 				get_Industries_Data()
 				get_Technology_Data()
 				get_Product_Data()
+                
 			  }
 		},[])
 		useEffect(()=>{
@@ -294,6 +300,9 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
 		useEffect(()=>{
 			get_Manufacturers_Data()
 		},[manufactured_by])
+        useEffect(()=>{
+			set_joined_suppliers_data([...manufacturers_data, ...distributors_data]);
+		},[listed_by_id])
 
     //input error handlers
     const [input_error,set_input_error]=useState(false);
@@ -427,6 +436,45 @@ const [short_on_expiry_status_info, set_short_on_expiry_status_info]=useState(fa
                                 </HStack>
                                 {input_error && distributed_by == '' ? 
                                     <FormErrorMessage>A distributor account is required.</FormErrorMessage>
+                                : (
+                                    null
+                                )}
+                            </FormControl>
+                            <FormControl isRequired isInvalid={input_error && distributed_by == '' ? true : false}>
+                                <FormLabel>Listed by</FormLabel>
+                                <HStack>
+                                    <Input value={listed_by_id} type='text' placeholder={product_data?.listed_by_id} onChange={((e)=>{set_listed_by_id(e.target.value);})}/>
+                                    <Popover placement={'auto'}>
+                                        <PopoverTrigger bg='gray.200' p='1' borderRadius={5}>
+                                            <PersonSearchIcon />
+                                        </PopoverTrigger>
+                                        <Portal>
+                                            <PopoverContent>
+                                                <PopoverArrow />
+                                                <PopoverCloseButton />
+                                                    <PopoverBody>
+                                                    {joined_suppliers_data?.map((supplier)=>{
+                                                        return(
+                                                            <HStack cursor={'pointer'} minH='48px' key={supplier?._id} onClick={(()=>{set_listed_by_id(supplier?._id)})}>
+                                                                <Avatar
+                                                                    boxSize='2rem'
+                                                                    borderRadius='full'
+                                                                    src={supplier?.profile_photo_url}
+                                                                    name={supplier?.company_name}
+                                                                    objectFit={'cover'}
+                                                                    mr='12px'
+                                                                />
+                                                                <Text>{supplier.company_name}</Text>
+                                                            </HStack>
+                                                        )
+                                                    })}
+                                                    </PopoverBody>
+                                            </PopoverContent>
+                                        </Portal>
+                                    </Popover>
+                                </HStack>
+                                {input_error && distributed_by == '' ? 
+                                    <FormErrorMessage>A supplier account is required to show who owns the product.</FormErrorMessage>
                                 : (
                                     null
                                 )}

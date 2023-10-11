@@ -556,7 +556,7 @@ const Body=()=>{
                         <Tabs>
                             <TabList>
                                 <Tab>Details</Tab>
-                                <Tab>Products</Tab>
+                                <Tab>Products [{products?.length}]</Tab>
                             </TabList>
 
                             <TabPanels>
@@ -585,9 +585,9 @@ const Body=()=>{
                                         <Wrap>
                                             {industries?.map((item,index)=>{
                                                 return(
-                                                    <HStack>
+                                                    <HStack key={index}>
                                                         <FiberManualRecordIcon style={{fontSize:'10'}}/>
-                                                        <Text fontSize='sm' key={index}>{item}</Text>
+                                                        <Text fontSize='sm' >{item}</Text>
                                                     </HStack>
                                                 )
                                             })}
@@ -691,6 +691,7 @@ const Body=()=>{
                                                     p='4'
                                                     my='2'
                                                     justify='space-between'
+                                                    key={item?._id}
                                                 >
                                                     <Box>
                                                         <Text 

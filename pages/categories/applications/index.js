@@ -183,7 +183,7 @@ const Application_Card_Item=({item,auth_role,set_refresh,refresh})=>{
                         <Text fontSize='md'>Mobile: {item?.mobile ? item?.mobile : '-'}</Text>
                     </HStack>
                     <HStack alignItems='center' my='2'>
-                        <Text fontSize='md'>Linked in: {item?.linkedInUrl ? item?.linkedInUrl : '-'}</Text>
+                        <Text fontSize='md'>LinkedIn: {item?.linkedInUrl ? item?.linkedInUrl : '-'}</Text>
                     </HStack>
                     <Link href={item?.resume_url} bg='#fff' border='1px' borderColor='grey' borderRadius={5} p='2' mt='2' flex='1' w='full' alignItems={'center'} isExternal>
                         <InsertDriveFileIcon style={{color:'#EA9DB0',fontSize:'20px'}} /> 

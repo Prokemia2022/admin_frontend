@@ -134,6 +134,8 @@ const Body=()=>{
 	const [fromDate,set_fromDate]=useState('');
 	const [toDate,set_toDate]=useState(moment(new Date()).format("YYYY-MM-DD"));
 
+    const [filtered_sales,set_filtered_sales]=useState('');
+
 	const cookies = new Cookies();
     let token = cookies.get('admin_token');
     const [auth_role,set_auth_role]=useState("")
@@ -192,6 +194,10 @@ const Body=()=>{
 					return new Date(item?.createdAt).getTime() >= new Date(fromDate).getTime() && new Date(item?.createdAt).getTime() <= new Date(toDate).getTime()
 				});
 				//console.log(filtered_by_date)
+                const sales_data = filtered_by_date.map((item)=> item.total)
+                let sales = Intl.NumberFormat().format(sales_data.reduce((a, b) => a + b, 0));
+                set_filtered_sales(sales)
+
 				set_orders(filtered_by_date);
 			}else{
 				set_orders(result_data)
@@ -577,6 +583,24 @@ const Body=()=>{
                                     >
                                         <TagLabel>{fromDate}</TagLabel>
                                         <TagCloseButton />
+                                    </Tag>
+                                </Flex>
+                                : 
+                                null
+                            }
+                            {fromDate !== ''? 
+                                <Flex mt='2' gap='1' border={'1px'} borderStyle={'dashed'} borderColor={'gray.200'} borderRadius={5} p='2'>
+                                    <Text fontWeight={'semibold'} fontSize={'sm'}>
+                                        Total filtered sales:
+                                    </Text>
+                                    <Tag
+                                        size={'md'}
+                                        borderRadius='md'
+                                        variant='subtle'
+                                        bg='teal'
+                                        color={'#fff'}
+                                    >
+                                        <TagLabel>Ksh {filtered_sales}</TagLabel>
                                     </Tag>
                                 </Flex>
                                 : 

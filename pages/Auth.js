@@ -38,7 +38,7 @@ export default function AuthHandler(){
 		if (client.width > 500){
 			setwindow(true)
 		}
-		if(token){
+		if(token && token !== 'undefined'){
 			router.push('/dashboard_new');
 			return ;
 		}
@@ -76,18 +76,16 @@ export default function AuthHandler(){
 						  status: 'success',
 						  isClosable: true,
 						});
-					setTimeout(()=>{
-					},6000)
 					router.push("/dashboard_new");
 					return ;
 				}
 				else{
 					return toast({
-								title: 'Error logging in',
-								description: response.data,
-								status: 'error',
-								isClosable: true,
-							  })
+							title: 'Error logging in',
+							description: response.data,
+							status: 'error',
+							isClosable: true,
+						})
 				}
 			}).catch((err)=>{
 				return toast({

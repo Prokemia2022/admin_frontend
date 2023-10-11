@@ -445,7 +445,7 @@ const Body=()=>{
                                 <Text fontWeight={'bold'}>Website</Text>
                                 <HStack color='teal' my='2' fontSize='sm'>
                                     <LanguageIcon mx='2px' />
-                                    <a href={`${product_data?.website_link_to_Seller}`} target="_blank" rel="noopener noreferrer" style={{width:'50px'}}>{product_data?.website_link_to_Seller}</a>
+                                    <a href={`${product_data?.website_link_to_Seller}`} target="_blank" rel="noopener noreferrer" style={{width:'200px'}}>{product_data?.website_link_to_Seller}</a>
                                 </HStack>
                             </Box>
                             <Box mb='2'>

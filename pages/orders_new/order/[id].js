@@ -90,6 +90,8 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 //api
 import Get_Order from '../../api/orders/get_order.js';
 import Edit_Order from '../../api/orders/edit_order.js';
@@ -97,6 +99,8 @@ import Delete_Order from '../../api/orders/delete_order.js'
 //components
 import Edit_Order_Form from "./edit";
 import Create_Invoice_PDF from "../../api/orders/create_invoice_pdf";
+import Approve_Order from "../../api/orders/approve_order";
+import Reject_Order from "../../api/orders/reject_order";
 
 export default function Order(){
     return(
@@ -155,28 +159,26 @@ const Body=()=>{
 
 	const handle_create_invoice=async()=>{
 		const order_payload = {
-		_id: order_data?._id,
-		//client-info
-		name_of_client: order_data?.name_of_client,
-		company_name_of_client: order_data?.company_name_of_client,
-		mobile_of_client: order_data?.mobile_of_client,
-		email_of_client: order_data?.email_of_client,
-		location_of_client: order_data?.location_of_client,
-		//product info
-		name_of_product: order_data?.name_of_product,
-		volume_of_items: order_data?.volume_of_items,
-		unit_price: order_data?.unit_price,
-		total: order_data?.volume_of_items * order_data?.unit_price,
-		//payment&delivery
-		createdAt:date,
-		delivery_date: moment(order_data?.delivery_date).format("MMM Do YY"),
-		delivery_terms: order_data?.delivery_terms,
-		payment_terms: order_data?.payment_terms
-    }
+			_id: order_data?._id,
+			//client-info
+			name_of_client: order_data?.name_of_client,
+			company_name_of_client: order_data?.company_name_of_client,
+			mobile_of_client: order_data?.mobile_of_client,
+			email_of_client: order_data?.email_of_client,
+			location_of_client: order_data?.location_of_client,
+			//product info
+			name_of_product: order_data?.name_of_product,
+			volume_of_items: order_data?.volume_of_items,
+			unit_price: order_data?.unit_price,
+			total: order_data?.volume_of_items * order_data?.unit_price,
+			//payment&delivery
+			createdAt:moment(order_data?.createdAt).format("MMM Do YY"),
+			delivery_date: delivery_date,
+			delivery_terms: order_data?.delivery_terms,
+			payment_terms: order_data?.payment_terms
+		}
 		Create_Invoice_PDF(order_payload)
-		await Approve_Order(payload).then(()=>{
-			router.reload()
-		})
+		await Handle_Approve_Order(payload)
 	}
 
 	const handle_download_invoice=()=>{
@@ -209,7 +211,7 @@ const Body=()=>{
 				title: '',
 				position: 'top-left',
 				variant:"subtle",
-				description: `${payload?.name_of_product} has successfully been rejected`,
+				description: `${order_data?.name_of_product} has successfully been rejected`,
 				status: 'success',
 				isClosable: true,
 			});
@@ -234,7 +236,7 @@ const Body=()=>{
 				title: '',
 				position: 'top-left',
 				variant:"subtle",
-				description: `${payload?.name_of_product} has successfully been approved`,
+				description: `${order_data?.name_of_product} has successfully been approved`,
 				status: 'success',
 				isClosable: true,
 			});
@@ -303,12 +305,41 @@ const Body=()=>{
                                     <Text>Edit order</Text>
                                 </HStack>
                             </MenuItem>
-                            <MenuItem _hover={{bg:'gray.300',borderRadius:'5',}} onClick={handle_download_invoice}>
-                                <HStack>
-                                    <CloudDownloadIcon/>
-                                    <Text>Download invoice</Text>
-                                </HStack>
-                            </MenuItem>
+                            {order_data.order_status === 'pending' && order_data.order_status !== 'rejected'? 
+                                <MenuItem _hover={{bg:'gray.300',borderRadius:'5',}} onClick={handle_create_invoice}>
+                                    <HStack>
+                                        <CloudDownloadIcon/>
+                                        <Text>Create invoice</Text>
+                                    </HStack>
+                                </MenuItem>
+                                :
+                                <MenuItem _hover={{bg:'gray.300',borderRadius:'5',}} onClick={handle_download_invoice}>
+                                    <HStack>
+                                        <CloudDownloadIcon/>
+                                        <Text>Download invoice</Text>
+                                    </HStack>
+                                </MenuItem>
+                            }
+                            {order_data.order_status === 'pending'? 
+                                <MenuItem _hover={{bg:'gray.300',borderRadius:'5',}} onClick={Handle_Reject_Order}>
+                                    <HStack>
+                                        <DisabledByDefaultIcon/>
+                                        <Text>Reject this Order</Text>
+                                    </HStack>
+                                </MenuItem>
+                                :
+                                null
+                            }
+                            {order_data.order_status === 'rejected'? 
+                                <MenuItem _hover={{bg:'gray.300',borderRadius:'5',}} onClick={Handle_Approve_Order}>
+                                    <HStack>
+                                        <CheckCircleIcon/>
+                                        <Text>Approve this Order</Text>
+                                    </HStack>
+                                </MenuItem>
+                                :
+                                null
+                            }
                             <Divider/>
                             <MenuItem _hover={{bg:'gray.300',borderRadius:'5',}} onClick={onOpen} >
                                 <HStack>

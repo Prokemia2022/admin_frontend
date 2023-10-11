@@ -42,6 +42,7 @@ import {
 import Navigation from '../../components/Navigation';
 //utils
 import {useRouter} from 'next/router';
+import { RWebShare } from "react-web-share";
 //icons
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
@@ -179,6 +180,14 @@ const Body=()=>{
                         <BreadcrumbLink>salespeople</BreadcrumbLink>
                     </BreadcrumbItem>
                 </Breadcrumb>
+                <RWebShare
+					data={{
+						text: "Account Sign Up Link.",
+						url: "https://prokemia.com/signup/sales",
+						title: "Signup Link",
+					}}>
+					<Text fontSize={'14px'} p='1' bgColor={'#009393'} borderRadius={5} color='#fff' textDecoration={'1px underline dotted #009393'} cursor='pointer'>signup link 🔗</Text>
+				</RWebShare>
             </HStack>
             <Box gap='2' bg='#fff' borderRadius={5} p='4' mt='4'>
                 <Tabs className={styles.products_container} position="relative" variant='enclosed' size='md'  overflowX={'scroll'} overscroll={''}>
