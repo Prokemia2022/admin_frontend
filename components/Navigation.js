@@ -48,6 +48,7 @@ import {Receipt,Widgets,Inventory, Pending} from '@mui/icons-material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddIcon from '@mui/icons-material/Add';
 import CategoryIcon from '@mui/icons-material/Category';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 
 import { useEffect, useState } from "react";
 
@@ -78,11 +79,18 @@ function New_Navigation_Tab({children}){
             });
 	    	router.push("/")
 			return;
-	    }else{
-        let decoded = jwt_decode(token);
-        let id = decoded?.id
-        fetch_user_details(id);
-        Fetch_Notifications()
+	    }else if(token && token === 'undefined'){
+        router.push('/');
+        return ;
+      }else{
+        try{
+          let decoded = jwt_decode(token);
+          let id = decoded?.id
+          fetch_user_details(id);
+          Fetch_Notifications()
+        }catch(error){
+          console.error(error)
+        }
 		}
 	},[]);
 
@@ -111,6 +119,7 @@ function New_Navigation_Tab({children}){
       }).then(()=>{
         router.push('/')
       }).catch((err)=>{
+        console.log(err)
         toast({
                 title: 'error while logging out',
                 description: ``,
@@ -560,10 +569,19 @@ const SidebarContent = (props) => {
           (null)
         }
         <NavItem 
-          icon={HelpCenterIcon} 
+          bg={router?.asPath == '/analytics'? 'teal.100' : ''} 
+          borderRadius={router?.asPath == '/analytics'? 'md' : ''} 
+          icon={LeaderboardIcon}
+          onClick={(()=>{router.push(`/analytics`)})}
         >
-          HelpCenter
+          Analytics
         </NavItem>
       </Flex>
     </Box>
   )};
+
+//   <NavItem 
+//   icon={HelpCenterIcon} 
+// >
+//   HelpCenter
+// </NavItem>
